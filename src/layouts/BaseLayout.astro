@@ -12,27 +12,35 @@ const { title } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
+
     <style>
       :root {
         color-scheme: light;
-        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+
+        --bg: #faf8f5;
+        --surface: #fffdf9;
+        --line: #ddd5ca;
+        --text: #2d2822;
+        --muted: #665d54;
+        --accent: #6e5a47;
+
+        --ui-font: 'Inter', 'Avenir Next', 'Segoe UI', Roboto, sans-serif;
+        --content-font: 'Iowan Old Style', 'Palatino Linotype', Palatino,
+          'Times New Roman', serif;
+      }
+
+      * {
+        box-sizing: border-box;
       }
 
       body {
         margin: 0;
-        background: #f3f4f6;
-        color: #111827;
-      }
-
-      .site-header,
-      .site-footer {
-        background: #ffffff;
-        border-bottom: 1px solid #e5e7eb;
-      }
-
-      .site-footer {
-        border-bottom: 0;
-        border-top: 1px solid #e5e7eb;
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--content-font);
+        font-size: 1.0625rem;
+        line-height: 1.7;
+        text-rendering: optimizeLegibility;
       }
 
       .container {
@@ -40,25 +48,66 @@ const { title } = Astro.props;
         margin: 0 auto;
       }
 
-      .site-header .container,
-      .site-footer .container {
-        padding: 1rem 0;
+      .site-header {
+        border-bottom: 1px solid var(--line);
+        background: color-mix(in srgb, var(--surface) 88%, #f5efe7 12%);
+      }
+
+      .site-header .container {
+        padding: 1.25rem 0;
       }
 
       .brand {
         margin: 0;
-        font-size: 1.35rem;
+        font-family: var(--ui-font);
+        font-size: clamp(1.125rem, 0.95rem + 0.85vw, 1.5rem);
+        letter-spacing: 0.02em;
+        color: #2f251c;
       }
 
       main.container {
-        padding: 2rem 0 3rem;
+        padding: clamp(2rem, 1.2rem + 3vw, 4rem) 0;
+      }
+
+      .site-footer {
+        border-top: 1px solid var(--line);
+      }
+
+      .site-footer .container {
+        padding: 1.2rem 0 1.5rem;
+      }
+
+      .site-footer small {
+        font-family: var(--ui-font);
+        color: var(--muted);
       }
 
       a {
-        color: #1d4ed8;
+        color: var(--accent);
+        text-decoration-thickness: 0.09em;
+        text-underline-offset: 0.16em;
+        transition: color 160ms ease;
+      }
+
+      a:hover,
+      a:focus-visible {
+        color: #4d3e31;
+      }
+
+      @media (max-width: 640px) {
+        body {
+          font-size: 1rem;
+        }
+
+        .site-header .container,
+        .site-footer .container {
+          padding-left: 0.15rem;
+          padding-right: 0.15rem;
+        }
       }
     </style>
   </head>
+
   <body>
     <header class="site-header">
       <div class="container">
@@ -77,3 +126,4 @@ const { title } = Astro.props;
     </footer>
   </body>
 </html>
+
