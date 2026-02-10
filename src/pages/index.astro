@@ -1,0 +1,114 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { formatDateBR } from '../utils/formatDateBR';
+import authors from '../data/authors.json';
+
+const posts = (await getCollection('posts')).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+
+const getAuthorName = (authorId: string) =>
+  authors.find((author) => author.id === authorId)?.name ?? 'Autor';
+---
+
+<BaseLayout title="Perspectiva Cristã">
+  <header class="hero">
+    <h1 class="site-title">Perspectiva Cristã</h1>
+    <p>Reflexões bíblicas, fé e propósito para o dia a dia.</p>
+  </header>
+
+  <section class="posts" aria-label="Lista de artigos">
+    <h2>Artigos</h2>
+    <ul>
+      {
+        posts.map((post) => (
+          <li>
+            <a href={`/posts/${post.id}/`}>
+              <span class="title">{post.data.title}</span>
+              <span class="meta">{getAuthorName(post.data.authorId)} • {formatDateBR(post.data.date)}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    margin-bottom: 1.8rem;
+  }
+
+  .site-title {
+    margin: 0;
+    font-size: clamp(2rem, 1.2rem + 2.5vw, 3rem);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    color: #241d17;
+  }
+
+  .hero p {
+    margin: 0.6rem 0 0;
+    color: #62584d;
+    max-width: 62ch;
+    font-size: 1.05rem;
+  }
+
+  .posts h2 {
+    margin: 0 0 1rem;
+    font-size: 1.05rem;
+    font-family: 'Inter', 'Avenir Next', 'Segoe UI', Roboto, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #6d6052;
+  }
+
+  .posts ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid #ddd4c7;
+  }
+
+  .posts li {
+    border-bottom: 1px solid #ddd4c7;
+  }
+
+  .posts a {
+    display: grid;
+    gap: 0.3rem;
+    padding: 1rem 0.2rem;
+    text-decoration: none;
+    transition: background-color 160ms ease, transform 160ms ease;
+    border-radius: 0.45rem;
+  }
+
+  .posts a:hover,
+  .posts a:focus-visible {
+    background: #f4eee5;
+    transform: translateY(-1px);
+  }
+
+  .title {
+    font-size: 1.25rem;
+    line-height: 1.35;
+    color: #2d241c;
+  }
+
+  .meta {
+    font-family: 'Inter', 'Avenir Next', 'Segoe UI', Roboto, sans-serif;
+    font-size: 0.88rem;
+    color: #6d6155;
+  }
+
+  @media (max-width: 640px) {
+    .posts a {
+      padding: 0.9rem 0;
+    }
+
+    .title {
+      font-size: 1.12rem;
+    }
+  }
+</style>
