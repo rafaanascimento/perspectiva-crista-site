@@ -33,6 +33,7 @@ const fallbackCover =
 <BaseLayout title={title}>
   <article>
     <header class="post-header">
+      <a class="back-link" href="/">← Voltar para a página inicial</a>
       <h1>{title}</h1>
       <p class="meta">Por {author.name} • {formatDateBR(date)}</p>
     </header>
@@ -69,6 +70,27 @@ const fallbackCover =
     line-height: 1.18;
     letter-spacing: -0.012em;
     color: #241d17;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-bottom: 1rem;
+    font-family: 'Inter', 'Avenir Next', 'Segoe UI', Roboto, sans-serif;
+    font-size: 0.92rem;
+    font-weight: 500;
+    letter-spacing: 0.008em;
+    color: #6a5d4f;
+    text-decoration: none;
+    transition: color 180ms ease;
+  }
+
+  .back-link:hover,
+  .back-link:focus-visible {
+    color: #43372c;
+    text-decoration: underline;
+    text-underline-offset: 0.16em;
   }
 
   .meta {
@@ -157,4 +179,3 @@ const fallbackCover =
     }
   }
 </style>
-
