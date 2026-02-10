@@ -10,6 +10,23 @@ const posts = (await getCollection('posts')).sort(
 
 const getAuthorName = (authorId: string) =>
   authors.find((author) => author.id === authorId)?.name ?? 'Autor';
+
+const getCoverPath = (cover: string | undefined) => {
+  if (!cover) return '/images/post-cover.jpg';
+  return cover.startsWith('/') ? cover : `/${cover}`;
+};
+
+const fallbackCover =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(`
+<svg xmlns='http://www.w3.org/2000/svg' width='960' height='560' viewBox='0 0 960 560'>
+  <rect width='960' height='560' fill='#E9E2D8'/>
+  <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle'
+        fill='#6F6355' font-size='34' font-family='Arial, sans-serif'>
+    Capa indisponível
+  </text>
+</svg>
+`);
 ---
 
 <BaseLayout title="Perspectiva Cristã">
@@ -20,26 +37,43 @@ const getAuthorName = (authorId: string) =>
 
   <section class="posts" aria-label="Lista de artigos">
     <h2>Artigos</h2>
-    <ul>
+
+    <div class="grid">
       {
-        posts.map((post) => (
-          <li>
-            <a href={`/posts/${post.id}/`}>
-              <span class="title">{post.data.title}</span>
-              <span class="meta">
-                {getAuthorName(post.data.authorId)} • {formatDateBR(post.data.date)}
-              </span>
+        posts.map((post) => {
+          const cover = getCoverPath(
+            (post.data as { cover?: string; coverImage?: string }).cover ??
+              post.data.coverImage
+          );
+
+          return (
+            <a class="card" href={`/posts/${post.id}/`}>
+              <img
+                src={cover}
+                alt={`Capa do artigo ${post.data.title}`}
+                width="960"
+                height="560"
+                loading="lazy"
+                onerror={`this.onerror=null;this.src='${fallbackCover}';`}
+              />
+              <div class="card-body">
+                <h3>{post.data.title}</h3>
+                <p class="meta">
+                  {formatDateBR(post.data.date)} •{' '}
+                  {getAuthorName(post.data.authorId)}
+                </p>
+              </div>
             </a>
-          </li>
-        ))
+          );
+        })
       }
-    </ul>
+    </div>
   </section>
 </BaseLayout>
 
 <style>
   .hero {
-    margin-bottom: 1.8rem;
+    margin-bottom: 2rem;
   }
 
   .site-title {
@@ -66,51 +100,68 @@ const getAuthorName = (authorId: string) =>
     color: #6d6052;
   }
 
-  .posts ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    border-top: 1px solid #ddd4c7;
-  }
-
-  .posts li {
-    border-bottom: 1px solid #ddd4c7;
-  }
-
-  .posts a {
+  .grid {
     display: grid;
-    gap: 0.3rem;
-    padding: 1rem 0.2rem;
+    grid-template-columns: 1fr;
+    gap: 1.1rem;
+  }
+
+  .card {
+    display: block;
+    overflow: hidden;
+    border-radius: 0.9rem;
+    border: 1px solid #ddd3c5;
+    background: #fffdf8;
     text-decoration: none;
-    transition: background-color 160ms ease, transform 160ms ease;
-    border-radius: 0.45rem;
+    transition: transform 180ms ease, box-shadow 180ms ease,
+      border-color 180ms ease;
   }
 
-  .posts a:hover,
-  .posts a:focus-visible {
-    background: #f4eee5;
-    transform: translateY(-1px);
+  .card:hover,
+  .card:focus-visible {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 22px rgba(58, 43, 30, 0.09);
+    border-color: #cfc1af;
   }
 
-  .title {
-    font-size: 1.25rem;
+  .card img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    background: #f2ece3;
+    border-bottom: 1px solid #e1d7c9;
+  }
+
+  .card-body {
+    padding: 1rem 1.05rem 1.1rem;
+  }
+
+  .card h3 {
+    margin: 0;
+    font-size: clamp(1.2rem, 1rem + 0.7vw, 1.45rem);
     line-height: 1.35;
-    color: #2d241c;
+    color: #2d241b;
   }
 
   .meta {
+    margin: 0.55rem 0 0;
     font-family: 'Inter', 'Avenir Next', 'Segoe UI', Roboto, sans-serif;
     font-size: 0.88rem;
     color: #6d6155;
   }
 
-  @media (max-width: 640px) {
-    .posts a {
-      padding: 0.9rem 0;
+  @media (min-width: 700px) {
+    .grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.25rem;
     }
+  }
 
-    .title {
-      font-size: 1.12rem;
+  @media (min-width: 1024px) {
+    .grid {
+      gap: 1.4rem;
     }
   }
 </style>
+

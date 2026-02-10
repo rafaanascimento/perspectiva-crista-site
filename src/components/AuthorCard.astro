@@ -65,5 +65,37 @@ const fallbackAvatar =
 
   .role {
     margin: 0;
-    font-family: 'Inter', 'Avenir Next', 'Segoe UI', Roboto,
+    font-family: 'Inter', 'Avenir Next', 'Segoe UI', Roboto, sans-serif;
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.11em;
+    color: #726558;
+  }
+
+  h3 {
+    margin: 0.28rem 0 0.3rem;
+    font-size: 1.15rem;
+    line-height: 1.25;
+    color: #2a211a;
+    font-family: 'Inter', 'Avenir Next', 'Segoe UI', Roboto, sans-serif;
+  }
+
+  .bio {
+    margin: 0;
+    font-size: 0.97rem;
+    line-height: 1.55;
+    color: #4f453a;
+  }
+
+  @media (max-width: 640px) {
+    .author-card {
+      align-items: flex-start;
+      padding: 0.95rem;
+    }
+
+    .bio {
+      font-size: 0.94rem;
+    }
+  }
+</style>
 
