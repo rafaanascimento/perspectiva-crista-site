@@ -1,0 +1,31 @@
+---
+import { getCollection, render } from 'astro:content';
+import PostLayout from '../../layouts/PostLayout.astro';
+import authors from '../../data/authors.json';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post }
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const author = authors.find((item) => item.id === post.data.authorId);
+
+if (!author) {
+  throw new Error(`Author ${post.data.authorId} not found.`);
+}
+---
+
+<PostLayout
+  title={post.data.title}
+  date={post.data.date}
+  coverImage={post.data.coverImage}
+  author={author}
+>
+  <Content />
+</PostLayout>
