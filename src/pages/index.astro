@@ -11,6 +11,11 @@ const posts = (await getCollection('posts')).sort(
 const getAuthorName = (authorId: string) =>
   authors.find((author) => author.id === authorId)?.name ?? 'Autor';
 
+const getCoverPath = (cover: string | undefined) => {
+  if (!cover) return '/images/post-cover.jpg';
+  return cover.startsWith('/') ? cover : `/${cover}`;
+};
+
 const fallbackCover =
   "data:image/svg+xml;utf8," +
   encodeURIComponent(`
@@ -32,7 +37,7 @@ const fallbackCover =
     <div class="grid">
       {
         posts.map((post) => {
-          const cover = (post.data as { cover?: string; coverImage?: string }).cover ?? post.data.coverImage;
+          const cover = getCoverPath((post.data as { cover?: string; coverImage?: string }).cover ?? post.data.coverImage);
 
           return (
             <a class="card" href={`/posts/${post.id}/`}>
