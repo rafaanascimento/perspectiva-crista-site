@@ -16,12 +16,16 @@ interface Props {
 }
 
 const { title, date, coverImage, author } = Astro.props;
+
 const fallbackCover =
   "data:image/svg+xml;utf8," +
   encodeURIComponent(`
 <svg xmlns='http://www.w3.org/2000/svg' width='1200' height='630' viewBox='0 0 1200 630'>
   <rect width='1200' height='630' fill='#E5E7EB'/>
-  <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='#6B7280' font-size='42' font-family='Arial, sans-serif'>Imagem de capa indisponível</text>
+  <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle'
+        fill='#6B7280' font-size='42' font-family='Arial, sans-serif'>
+    Imagem de capa indisponível
+  </text>
 </svg>
 `);
 ---
