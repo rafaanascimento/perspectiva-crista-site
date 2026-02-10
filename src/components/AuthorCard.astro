@@ -1,0 +1,99 @@
+---
+interface Props {
+  author: {
+    name: string;
+    avatar: string;
+    role: string;
+    bio: string;
+  };
+}
+
+const { author } = Astro.props;
+const fallbackAvatar =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(`
+<svg xmlns='http://www.w3.org/2000/svg' width='88' height='88' viewBox='0 0 88 88'>
+  <rect width='88' height='88' fill='#E5E7EB'/>
+  <circle cx='44' cy='33' r='16' fill='#9CA3AF'/>
+  <rect x='18' y='55' width='52' height='22' rx='11' fill='#9CA3AF'/>
+</svg>
+`);
+---
+
+<section class="author-card" aria-label="Informações do autor">
+  <img
+    src={author.avatar}
+    alt={`Foto de ${author.name}`}
+    width="88"
+    height="88"
+    loading="lazy"
+    onerror={`this.onerror=null;this.src='${fallbackAvatar}';`}
+  />
+
+  <div class="text">
+    <p class="role">{author.role}</p>
+    <h3>{author.name}</h3>
+    <p class="bio">{author.bio}</p>
+  </div>
+</section>
+
+<style>
+  .author-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.3rem;
+    padding: 1rem 1.1rem;
+    border-radius: 0.8rem;
+    background: #fdfaf4;
+    border: 1px solid #dccfbe;
+    box-shadow: 0 1px 4px rgba(64, 47, 30, 0.05);
+  }
+
+  img {
+    border-radius: 9999px;
+    object-fit: cover;
+    background: #f1ece3;
+    border: 1px solid #d5c8b7;
+    flex: 0 0 auto;
+  }
+
+  .text {
+    min-width: 0;
+  }
+
+  .role {
+    margin: 0;
+    font-family: 'Inter', 'Avenir Next', 'Segoe UI', Roboto, sans-serif;
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.11em;
+    color: #726558;
+  }
+
+  h3 {
+    margin: 0.28rem 0 0.3rem;
+    font-size: 1.15rem;
+    line-height: 1.25;
+    color: #2a211a;
+    font-family: 'Inter', 'Avenir Next', 'Segoe UI', Roboto, sans-serif;
+  }
+
+  .bio {
+    margin: 0;
+    font-size: 0.97rem;
+    line-height: 1.55;
+    color: #4f453a;
+  }
+
+  @media (max-width: 640px) {
+    .author-card {
+      align-items: flex-start;
+      padding: 0.95rem;
+    }
+
+    .bio {
+      font-size: 0.94rem;
+    }
+  }
+</style>

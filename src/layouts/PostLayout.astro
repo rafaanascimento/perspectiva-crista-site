@@ -1,0 +1,155 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import AuthorCard from '../components/AuthorCard.astro';
+import { formatDateBR } from '../utils/formatDateBR';
+
+interface Props {
+  title: string;
+  date: Date | string;
+  coverImage: string;
+  author: {
+    name: string;
+    avatar: string;
+    role: string;
+    bio: string;
+  };
+}
+
+const { title, date, coverImage, author } = Astro.props;
+const fallbackCover =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(`
+<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='630' viewBox='0 0 1200 630'>
+  <rect width='1200' height='630' fill='#E5E7EB'/>
+  <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='#6B7280' font-size='42' font-family='Arial, sans-serif'>Imagem de capa indisponível</text>
+</svg>
+`);
+---
+
+<BaseLayout title={title}>
+  <article>
+    <header class="post-header">
+      <h1>{title}</h1>
+      <p class="meta">Por {author.name} • {formatDateBR(date)}</p>
+    </header>
+
+    <img
+      class="cover"
+      src={coverImage}
+      alt={`Capa do artigo ${title}`}
+      width="1200"
+      height="630"
+      loading="lazy"
+      onerror={`this.onerror=null;this.src='${fallbackCover}';`}
+    />
+
+    <hr class="divider" />
+
+    <section class="content">
+      <slot />
+    </section>
+
+    <AuthorCard author={author} />
+  </article>
+</BaseLayout>
+
+<style>
+  article {
+    display: grid;
+    gap: clamp(1.25rem, 1rem + 1.4vw, 2rem);
+  }
+
+  .post-header h1 {
+    margin: 0 0 0.5rem;
+    font-size: clamp(2rem, 1.35rem + 2.2vw, 3rem);
+    line-height: 1.18;
+    letter-spacing: -0.012em;
+    color: #241d17;
+  }
+
+  .meta {
+    margin: 0;
+    color: #655b50;
+    font-family: 'Inter', 'Avenir Next', 'Segoe UI', Roboto, sans-serif;
+    font-size: 0.92rem;
+    letter-spacing: 0.01em;
+  }
+
+  .cover {
+    display: block;
+    width: 100%;
+    border-radius: 0.9rem;
+    border: 1px solid #d8cec1;
+    background: #f3f0eb;
+    box-shadow: 0 2px 8px rgba(70, 54, 38, 0.06);
+  }
+
+  .divider {
+    width: 100%;
+    border: 0;
+    border-top: 1px solid #ded7cc;
+    margin: 0;
+  }
+
+  .content {
+    width: min(100%, 70ch);
+    font-size: 1.125rem;
+    line-height: 1.9;
+    color: #322b24;
+  }
+
+  .content :global(p) {
+    margin: 0 0 1.25em;
+  }
+
+  .content :global(h2),
+  .content :global(h3) {
+    margin: 2.1em 0 0.7em;
+    line-height: 1.3;
+    color: #231d17;
+    font-family: 'Inter', 'Avenir Next', 'Segoe UI', Roboto, sans-serif;
+  }
+
+  .content :global(h2) {
+    font-size: clamp(1.35rem, 1.15rem + 1vw, 1.8rem);
+  }
+
+  .content :global(h3) {
+    font-size: clamp(1.15rem, 1rem + 0.7vw, 1.35rem);
+  }
+
+  .content :global(ul),
+  .content :global(ol) {
+    margin: 0.2em 0 1.3em;
+    padding-left: 1.4em;
+  }
+
+  .content :global(li + li) {
+    margin-top: 0.45em;
+  }
+
+  .content :global(blockquote) {
+    margin: 1.6em 0;
+    padding: 0.75em 1em;
+    border-left: 3px solid #c6b7a4;
+    background: #f5f0e8;
+    color: #4e4337;
+  }
+
+  .content :global(a) {
+    text-decoration-thickness: 0.08em;
+  }
+
+  @media (max-width: 768px) {
+    .content {
+      width: 100%;
+      font-size: 1.05rem;
+      line-height: 1.82;
+    }
+
+    .content :global(h2),
+    .content :global(h3) {
+      margin-top: 1.8em;
+    }
+  }
+</style>

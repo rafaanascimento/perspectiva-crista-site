@@ -1,0 +1,150 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { formatDateBR } from '../utils/formatDateBR';
+import authors from '../data/authors.json';
+
+const posts = (await getCollection('posts')).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+
+const getAuthorName = (authorId: string) =>
+  authors.find((author) => author.id === authorId)?.name ?? 'Autor';
+
+const fallbackCover =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(`
+<svg xmlns='http://www.w3.org/2000/svg' width='960' height='560' viewBox='0 0 960 560'>
+  <rect width='960' height='560' fill='#E9E2D8'/>
+  <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='#6F6355' font-size='34' font-family='Arial, sans-serif'>Capa indisponível</text>
+</svg>
+`);
+---
+
+<BaseLayout title="Perspectiva Cristã">
+  <header class="hero">
+    <h1 class="site-title">Perspectiva Cristã</h1>
+    <p>Reflexões bíblicas, fé e propósito para o dia a dia.</p>
+  </header>
+
+  <section class="posts" aria-label="Lista de artigos">
+    <h2>Artigos</h2>
+    <div class="grid">
+      {
+        posts.map((post) => {
+          const cover = (post.data as { cover?: string; coverImage?: string }).cover ?? post.data.coverImage;
+
+          return (
+            <a class="card" href={`/posts/${post.id}/`}>
+              <img
+                src={cover}
+                alt={`Capa do artigo ${post.data.title}`}
+                width="960"
+                height="560"
+                loading="lazy"
+                onerror={`this.onerror=null;this.src='${fallbackCover}';`}
+              />
+              <div class="card-body">
+                <h3>{post.data.title}</h3>
+                <p class="meta">{formatDateBR(post.data.date)} • {getAuthorName(post.data.authorId)}</p>
+              </div>
+            </a>
+          );
+        })
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    margin-bottom: 2rem;
+  }
+
+  .site-title {
+    margin: 0;
+    font-size: clamp(2rem, 1.2rem + 2.5vw, 3rem);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    color: #241d17;
+  }
+
+  .hero p {
+    margin: 0.6rem 0 0;
+    color: #62584d;
+    max-width: 62ch;
+    font-size: 1.05rem;
+  }
+
+  .posts h2 {
+    margin: 0 0 1rem;
+    font-size: 1.05rem;
+    font-family: 'Inter', 'Avenir Next', 'Segoe UI', Roboto, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #6d6052;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.1rem;
+  }
+
+  .card {
+    display: block;
+    overflow: hidden;
+    border-radius: 0.9rem;
+    border: 1px solid #ddd3c5;
+    background: #fffdf8;
+    text-decoration: none;
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+  }
+
+  .card:hover,
+  .card:focus-visible {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 22px rgba(58, 43, 30, 0.09);
+    border-color: #cfc1af;
+  }
+
+  .card img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    background: #f2ece3;
+    border-bottom: 1px solid #e1d7c9;
+  }
+
+  .card-body {
+    padding: 1rem 1.05rem 1.1rem;
+  }
+
+  .card h3 {
+    margin: 0;
+    font-size: clamp(1.2rem, 1rem + 0.7vw, 1.45rem);
+    line-height: 1.35;
+    color: #2d241b;
+  }
+
+  .meta {
+    margin: 0.55rem 0 0;
+    font-family: 'Inter', 'Avenir Next', 'Segoe UI', Roboto, sans-serif;
+    font-size: 0.88rem;
+    color: #6d6155;
+  }
+
+  @media (min-width: 700px) {
+    .grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .grid {
+      gap: 1.4rem;
+    }
+  }
+</style>
