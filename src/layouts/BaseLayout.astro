@@ -12,6 +12,7 @@ const { title } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
+
     <style>
       :root {
         color-scheme: light;
@@ -22,7 +23,8 @@ const { title } = Astro.props;
         --muted: #665d54;
         --accent: #6e5a47;
         --ui-font: 'Inter', 'Avenir Next', 'Segoe UI', Roboto, sans-serif;
-        --content-font: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Times New Roman', serif;
+        --content-font: 'Iowan Old Style', 'Palatino Linotype', Palatino,
+          'Times New Roman', serif;
       }
 
       * {
@@ -103,6 +105,7 @@ const { title } = Astro.props;
       }
     </style>
   </head>
+
   <body>
     <header class="site-header">
       <div class="container">

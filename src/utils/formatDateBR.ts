@@ -1,6 +1,6 @@
 export function formatDateBR(input: Date | string): string {
-  const original = typeof input === 'string' ? input : input.toString();
   const parsed = input instanceof Date ? input : new Date(input);
+  const original = typeof input === 'string' ? input : input.toString();
 
   if (Number.isNaN(parsed.getTime())) {
     return original;
@@ -10,6 +10,6 @@ export function formatDateBR(input: Date | string): string {
     day: '2-digit',
     month: 'long',
     year: 'numeric',
-    timeZone: 'UTC'
+    timeZone: 'UTC',
   }).format(parsed);
 }

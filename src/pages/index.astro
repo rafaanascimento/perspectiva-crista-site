@@ -21,7 +21,10 @@ const fallbackCover =
   encodeURIComponent(`
 <svg xmlns='http://www.w3.org/2000/svg' width='960' height='560' viewBox='0 0 960 560'>
   <rect width='960' height='560' fill='#E9E2D8'/>
-  <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='#6F6355' font-size='34' font-family='Arial, sans-serif'>Capa indisponível</text>
+  <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle'
+        fill='#6F6355' font-size='34' font-family='Arial, sans-serif'>
+    Capa indisponível
+  </text>
 </svg>
 `);
 ---
@@ -34,10 +37,14 @@ const fallbackCover =
 
   <section class="posts" aria-label="Lista de artigos">
     <h2>Artigos</h2>
+
     <div class="grid">
       {
         posts.map((post) => {
-          const cover = getCoverPath((post.data as { cover?: string; coverImage?: string }).cover ?? post.data.coverImage);
+          const cover = getCoverPath(
+            (post.data as { cover?: string; coverImage?: string }).cover ??
+              post.data.coverImage
+          );
 
           return (
             <a class="card" href={`/posts/${post.id}/`}>
@@ -51,7 +58,10 @@ const fallbackCover =
               />
               <div class="card-body">
                 <h3>{post.data.title}</h3>
-                <p class="meta">{formatDateBR(post.data.date)} • {getAuthorName(post.data.authorId)}</p>
+                <p class="meta">
+                  {formatDateBR(post.data.date)} •{' '}
+                  {getAuthorName(post.data.authorId)}
+                </p>
               </div>
             </a>
           );
@@ -103,7 +113,8 @@ const fallbackCover =
     border: 1px solid #ddd3c5;
     background: #fffdf8;
     text-decoration: none;
-    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+    transition: transform 180ms ease, box-shadow 180ms ease,
+      border-color 180ms ease;
   }
 
   .card:hover,
@@ -153,3 +164,4 @@ const fallbackCover =
     }
   }
 </style>
+
