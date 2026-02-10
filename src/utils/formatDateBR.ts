@@ -1,6 +1,6 @@
 export function formatDateBR(input: Date | string): string {
-  const original = typeof input === 'string' ? input : input.toISOString();
   const parsed = input instanceof Date ? input : new Date(input);
+  const original = typeof input === 'string' ? input : input.toString();
 
   if (Number.isNaN(parsed.getTime())) {
     return original;
