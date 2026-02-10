@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('posts')).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+---
+
+<BaseLayout title="Perspectiva Cristã">
+  <header>
+    <h1 class="site-title">Perspectiva Cristã</h1>
+    <p>Reflexões bíblicas, fé e propósito para o dia a dia.</p>
+  </header>
+
+  <section>
+    <h2>Artigos</h2>
+    <ul>
+      {
+        posts.map((post) => (
+          <li>
+            <a href={`/posts/${post.id}/`}>{post.data.title}</a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</BaseLayout>

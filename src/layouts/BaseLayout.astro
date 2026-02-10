@@ -1,0 +1,79 @@
+---
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      }
+
+      body {
+        margin: 0;
+        background: #f3f4f6;
+        color: #111827;
+      }
+
+      .site-header,
+      .site-footer {
+        background: #ffffff;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .site-footer {
+        border-bottom: 0;
+        border-top: 1px solid #e5e7eb;
+      }
+
+      .container {
+        width: min(920px, calc(100% - 2rem));
+        margin: 0 auto;
+      }
+
+      .site-header .container,
+      .site-footer .container {
+        padding: 1rem 0;
+      }
+
+      .brand {
+        margin: 0;
+        font-size: 1.35rem;
+      }
+
+      main.container {
+        padding: 2rem 0 3rem;
+      }
+
+      a {
+        color: #1d4ed8;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container">
+        <p class="brand">Perspectiva Cristã</p>
+      </div>
+    </header>
+
+    <main class="container">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <small>© {new Date().getFullYear()} Perspectiva Cristã</small>
+      </div>
+    </footer>
+  </body>
+</html>

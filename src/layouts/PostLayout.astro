@@ -1,0 +1,86 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import AuthorCard from '../components/AuthorCard.astro';
+import { formatDateBR } from '../utils/formatDateBR';
+
+interface Props {
+  title: string;
+  date: Date | string;
+  coverImage: string;
+  author: {
+    name: string;
+    avatar: string;
+    role: string;
+    bio: string;
+  };
+}
+
+const { title, date, coverImage, author } = Astro.props;
+const fallbackCover =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(`
+<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='630' viewBox='0 0 1200 630'>
+  <rect width='1200' height='630' fill='#E5E7EB'/>
+  <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='#6B7280' font-size='42' font-family='Arial, sans-serif'>Imagem de capa indisponível</text>
+</svg>
+`);
+---
+
+<BaseLayout title={title}>
+  <article>
+    <header>
+      <h1>{title}</h1>
+      <p>{formatDateBR(date)}</p>
+    </header>
+
+    <img
+      class="cover"
+      src={coverImage}
+      alt={`Capa do artigo ${title}`}
+      width="1200"
+      height="630"
+      loading="lazy"
+      onerror={`this.onerror=null;this.src='${fallbackCover}';`}
+    />
+
+    <section class="content">
+      <slot />
+    </section>
+
+    <AuthorCard author={author} />
+  </article>
+</BaseLayout>
+
+<style>
+  article {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  header h1 {
+    margin-bottom: 0.35rem;
+    line-height: 1.25;
+  }
+
+  header p {
+    margin: 0;
+    color: #6b7280;
+  }
+
+  .cover {
+    display: block;
+    width: 100%;
+    border-radius: 0.75rem;
+    border: 1px solid #d1d5db;
+    background: #f3f4f6;
+  }
+
+  .content {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    background: #ffffff;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    border: 1px solid #e5e7eb;
+  }
+</style>

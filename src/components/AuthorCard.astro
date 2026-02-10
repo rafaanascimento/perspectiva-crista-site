@@ -1,0 +1,72 @@
+---
+interface Props {
+  author: {
+    name: string;
+    avatar: string;
+    role: string;
+    bio: string;
+  };
+}
+
+const { author } = Astro.props;
+const fallbackAvatar =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(`
+<svg xmlns='http://www.w3.org/2000/svg' width='88' height='88' viewBox='0 0 88 88'>
+  <rect width='88' height='88' fill='#E5E7EB'/>
+  <circle cx='44' cy='33' r='16' fill='#9CA3AF'/>
+  <rect x='18' y='55' width='52' height='22' rx='11' fill='#9CA3AF'/>
+</svg>
+`);
+---
+
+<section class="author-card">
+  <img
+    src={author.avatar}
+    alt={`Foto de ${author.name}`}
+    width="88"
+    height="88"
+    loading="lazy"
+    onerror={`this.onerror=null;this.src='${fallbackAvatar}';`}
+  />
+  <div>
+    <p class="role">{author.role}</p>
+    <h3>{author.name}</h3>
+    <p>{author.bio}</p>
+  </div>
+</section>
+
+<style>
+  .author-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+  }
+
+  img {
+    border-radius: 9999px;
+    object-fit: cover;
+    background: #f3f4f6;
+  }
+
+  .role {
+    margin: 0;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #6b7280;
+  }
+
+  h3 {
+    margin: 0.25rem 0 0.35rem;
+  }
+
+  p {
+    margin: 0;
+  }
+</style>
