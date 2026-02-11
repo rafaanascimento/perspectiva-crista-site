@@ -85,9 +85,9 @@ const { title } = Astro.props;
 
       .site-header .container {
         display: grid;
-        grid-template-columns: 1fr auto 1fr;
+        grid-template-columns: auto 1fr auto auto;
         align-items: center;
-        gap: 0.8rem;
+        gap: clamp(0.65rem, 1.2vw, 1.2rem);
         padding: clamp(1rem, 2vw, 1.5rem) 0;
       }
 
@@ -98,18 +98,44 @@ const { title } = Astro.props;
 
       .brand-link {
         font-family: var(--heading-font);
-        font-size: clamp(1.8rem, 1.25rem + 2.2vw, 3.05rem);
+        font-size: clamp(1.45rem, 1rem + 1.8vw, 2.25rem);
         font-weight: 700;
         line-height: 1.2;
         letter-spacing: 0.018em;
         color: var(--text);
-        text-align: center;
         text-decoration: none;
         display: inline-block;
       }
 
+      .site-nav {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        justify-self: end;
+        font-family: var(--ui-font);
+      }
+
+      .site-nav a {
+        text-decoration: none;
+        color: var(--text-soft);
+        font-size: 0.9rem;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        padding: 0.35rem 0.62rem;
+        border-radius: 999px;
+        border: 1px solid transparent;
+        transition: color 180ms ease, border-color 180ms ease,
+          background-color 180ms ease;
+      }
+
+      .site-nav a:hover,
+      .site-nav a:focus-visible {
+        color: var(--text);
+        border-color: var(--line);
+        background: var(--surface-soft);
+      }
+
       .theme-toggle {
-        grid-column: 3;
         justify-self: end;
         display: inline-flex;
         align-items: center;
@@ -204,28 +230,29 @@ const { title } = Astro.props;
         border-radius: 0.4rem;
       }
 
+      @media (max-width: 900px) {
+        .site-header .container {
+          grid-template-columns: 1fr auto;
+          row-gap: 0.65rem;
+        }
+
+        .brand {
+          grid-column: 1 / -1;
+        }
+
+        .site-nav {
+          justify-self: start;
+          flex-wrap: wrap;
+        }
+      }
+
       @media (max-width: 760px) {
         body {
           font-size: 1rem;
         }
 
-        .site-header .container {
-          grid-template-columns: 1fr auto;
-          row-gap: 0.75rem;
-        }
-
-        .brand {
-          grid-column: 1 / -1;
-          text-align: center;
-        }
-
         .brand-link {
-          font-size: clamp(1.65rem, 1.25rem + 3vw, 2.45rem);
-        }
-
-        .theme-toggle {
-          grid-column: 2;
-          justify-self: end;
+          font-size: clamp(1.5rem, 1.2rem + 2.4vw, 2rem);
         }
 
         .footer-wrap {
@@ -242,6 +269,12 @@ const { title } = Astro.props;
         <p class="brand">
           <a class="brand-link" href="/">Perspectiva Cristã</a>
         </p>
+
+        <nav class="site-nav" aria-label="Navegação principal">
+          <a href="/">Início</a>
+          <a href="/artigos">Artigos</a>
+        </nav>
+
         <button
           type="button"
           class="theme-toggle"
@@ -263,7 +296,7 @@ const { title } = Astro.props;
       <div class="container footer-wrap">
         <div class="footer-copy">
           <small>© 2026 Perspectiva Cristã</small>
-          <small>Desenvolvido por Rafael</small>
+          <small>Desenvolvido por Rafael Nascimento</small>
         </div>
         <nav class="footer-links" aria-label="Links sociais">
           <a
