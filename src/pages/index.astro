@@ -69,59 +69,93 @@ const fallbackCover =
       }
     </div>
   </section>
+
+  <section class="newsletter" aria-label="Assinatura de novidades">
+    <div class="newsletter-inner">
+      <h2>Receba nossas novidades</h2>
+      <form class="newsletter-form" action="#" method="post">
+        <label>
+          Seu Melhor E-mail
+          <input type="email" name="email" autocomplete="email" required />
+        </label>
+
+        <label>
+          Seu Primeiro Nome
+          <input type="text" name="firstName" autocomplete="given-name" required />
+        </label>
+
+        <button type="submit">Assinar / Receber novidades</button>
+      </form>
+      <p class="note">
+        Você pode cancelar a inscrição a qualquer momento. Para mais detalhes,
+        consulte nossa Política de Privacidade.
+      </p>
+    </div>
+  </section>
 </BaseLayout>
 
 <style>
   .hero {
-    margin-bottom: 2rem;
+    margin-bottom: clamp(2rem, 2vw, 2.6rem);
   }
 
   .site-title {
     margin: 0;
-    font-size: clamp(2rem, 1.2rem + 2.5vw, 3rem);
-    line-height: 1.15;
-    letter-spacing: -0.015em;
-    color: #241d17;
+    font-family: var(--heading-font);
+    font-size: clamp(2.1rem, 1.25rem + 3vw, 3.5rem);
+    line-height: 1.14;
+    letter-spacing: -0.012em;
+    color: var(--text);
   }
 
   .hero p {
-    margin: 0.6rem 0 0;
-    color: #62584d;
-    max-width: 62ch;
-    font-size: 1.05rem;
+    margin: 0.7rem 0 0;
+    color: var(--text-soft);
+    font-family: var(--ui-font);
+    max-width: 64ch;
+    font-size: clamp(1.01rem, 0.95rem + 0.4vw, 1.15rem);
+    line-height: 1.6;
   }
 
-  .posts h2 {
-    margin: 0 0 1rem;
-    font-size: 1.05rem;
-    font-family: 'Inter', 'Avenir Next', 'Segoe UI', Roboto, sans-serif;
+  .posts h2,
+  .newsletter h2 {
+    margin: 0 0 1.1rem;
+    font-family: var(--ui-font);
+    font-size: 0.92rem;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: #6d6052;
+    letter-spacing: 0.12em;
+    color: var(--text-soft);
   }
 
   .grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.1rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.8rem;
   }
 
   .card {
-    display: block;
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
-    border-radius: 0.9rem;
-    border: 1px solid #ddd3c5;
-    background: #fffdf8;
+    border-radius: 1rem;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
     text-decoration: none;
-    transition: transform 180ms ease, box-shadow 180ms ease,
-      border-color 180ms ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease,
+      border-color 0.2s ease, background-color 0.2s ease;
   }
 
   .card:hover,
   .card:focus-visible {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 22px rgba(58, 43, 30, 0.09);
-    border-color: #cfc1af;
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: color-mix(in srgb, var(--line) 68%, var(--accent) 32%);
+  }
+
+  .card:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 3px;
   }
 
   .card img {
@@ -129,39 +163,107 @@ const fallbackCover =
     width: 100%;
     aspect-ratio: 16 / 9;
     object-fit: cover;
-    background: #f2ece3;
-    border-bottom: 1px solid #e1d7c9;
+    background: var(--surface-soft);
+    border-bottom: 1px solid var(--line);
   }
 
   .card-body {
-    padding: 1rem 1.05rem 1.1rem;
+    padding: 1.15rem;
   }
 
   .card h3 {
     margin: 0;
-    font-size: clamp(1.2rem, 1rem + 0.7vw, 1.45rem);
+    font-size: clamp(1.18rem, 1.02rem + 0.7vw, 1.48rem);
     line-height: 1.35;
-    color: #2d241b;
+    color: var(--text);
+    font-family: var(--heading-font);
   }
 
   .meta {
-    margin: 0.55rem 0 0;
-    font-family: 'Inter', 'Avenir Next', 'Segoe UI', Roboto, sans-serif;
-    font-size: 0.88rem;
-    color: #6d6155;
+    margin: 0.58rem 0 0;
+    font-family: var(--ui-font);
+    font-size: 0.9rem;
+    line-height: 1.45;
+    color: var(--text-soft);
   }
 
-  @media (min-width: 700px) {
-    .grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 1.25rem;
+  .newsletter {
+    margin-top: clamp(2.2rem, 3vw, 3.4rem);
+  }
+
+  .newsletter-inner {
+    max-width: 820px;
+    padding: clamp(1.2rem, 1.6vw, 1.6rem);
+    border: 1px solid var(--line);
+    border-radius: 1rem;
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .newsletter-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 0.95rem;
+    align-items: end;
+  }
+
+  .newsletter-form label {
+    display: grid;
+    gap: 0.45rem;
+    font-family: var(--ui-font);
+    font-size: 0.87rem;
+    color: var(--text-soft);
+  }
+
+  .newsletter-form input {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 0.6rem;
+    background: var(--surface-soft);
+    color: var(--text);
+    font-family: var(--ui-font);
+    font-size: 0.96rem;
+    padding: 0.68rem 0.72rem;
+  }
+
+  .newsletter-form button {
+    border: 1px solid color-mix(in srgb, var(--accent) 70%, var(--line) 30%);
+    border-radius: 0.6rem;
+    background: var(--accent);
+    color: #fff;
+    font-family: var(--ui-font);
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 0.72rem 1rem;
+    cursor: pointer;
+    transition: transform 180ms ease, filter 180ms ease;
+  }
+
+  .newsletter-form button:hover {
+    transform: translateY(-1px);
+    filter: brightness(0.95);
+  }
+
+  .note {
+    margin: 0.82rem 0 0;
+    font-family: var(--ui-font);
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: var(--text-soft);
+    max-width: 76ch;
+  }
+
+  .dark .newsletter-form button {
+    color: #1c130d;
+  }
+
+  @media (max-width: 960px) {
+    .newsletter-form {
+      grid-template-columns: 1fr;
     }
-  }
 
-  @media (min-width: 1024px) {
-    .grid {
-      gap: 1.4rem;
+    .newsletter-form button {
+      justify-self: start;
     }
   }
 </style>
-
