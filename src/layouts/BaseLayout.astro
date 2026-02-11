@@ -130,6 +130,34 @@ const { title } = Astro.props;
         line-height: 1;
       }
 
+      .theme-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--surface-2);
+        color: var(--text);
+        font-family: var(--ui-font);
+        font-size: 0.86rem;
+        font-weight: 600;
+        padding: 0.45rem 0.82rem;
+        cursor: pointer;
+        transition: border-color 200ms ease, background-color 200ms ease,
+          color 200ms ease, box-shadow 200ms ease, transform 200ms ease;
+      }
+
+      .theme-toggle:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .theme-toggle .icon {
+        font-size: 1rem;
+        line-height: 1;
+      }
+
       main.container {
         padding: clamp(2rem, 2.5vw, 3.5rem) 0;
       }
