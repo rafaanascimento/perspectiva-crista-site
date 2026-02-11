@@ -13,18 +13,50 @@ const { title } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
 
+    <script is:inline>
+      (() => {
+        const storedTheme = localStorage.getItem('perspectiva-theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if ((storedTheme ?? (prefersDark ? 'dark' : 'light')) === 'dark') {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
+
     <style>
       :root {
         color-scheme: light;
-        --bg: #faf8f5;
+        --bg: #f4efe8;
         --surface: #fffdf9;
-        --line: #ddd5ca;
-        --text: #2d2822;
-        --muted: #665d54;
-        --accent: #6e5a47;
+        --surface-2: #fbf6ee;
+        --line: #c9bbab;
+        --text: #211a13;
+        --text-strong: #17110d;
+        --muted: #5a4f43;
+        --accent: #5e4633;
+        --accent-hover: #3f2f24;
+        --focus: #0f62fe;
+        --shadow-sm: 0 2px 8px rgba(39, 26, 16, 0.08);
+        --shadow-md: 0 10px 30px rgba(39, 26, 16, 0.12);
         --ui-font: 'Inter', 'Avenir Next', 'Segoe UI', Roboto, sans-serif;
         --content-font: 'Iowan Old Style', 'Palatino Linotype', Palatino,
           'Times New Roman', serif;
+      }
+
+      .dark {
+        color-scheme: dark;
+        --bg: #17130f;
+        --surface: #211a13;
+        --surface-2: #281f17;
+        --line: #4b3d2f;
+        --text: #efe4d7;
+        --text-strong: #fff6eb;
+        --muted: #c8b6a2;
+        --accent: #f4c58c;
+        --accent-hover: #ffe0b9;
+        --focus: #7ab8ff;
+        --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.36);
+        --shadow-md: 0 14px 36px rgba(0, 0, 0, 0.46);
       }
 
       * {
@@ -37,8 +69,10 @@ const { title } = Astro.props;
         color: var(--text);
         font-family: var(--content-font);
         font-size: 1.0625rem;
-        line-height: 1.7;
+        line-height: 1.75;
+        letter-spacing: 0.005em;
         text-rendering: optimizeLegibility;
+        transition: background-color 240ms ease, color 240ms ease;
       }
 
       .container {
@@ -48,22 +82,55 @@ const { title } = Astro.props;
 
       .site-header {
         border-bottom: 1px solid var(--line);
-        background: color-mix(in srgb, var(--surface) 88%, #f5efe7 12%);
+        background: color-mix(in srgb, var(--surface) 92%, var(--bg) 8%);
+        transition: background-color 240ms ease, border-color 240ms ease;
       }
 
       .site-header .container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
         padding: 1.25rem 0;
       }
 
       .brand {
         margin: 0;
-        font-family: var(--ui-font);
-        font-size: clamp(1.32rem, 1.05rem + 1.25vw, 1.95rem);
-        font-weight: 650;
+        font-family: var(--content-font);
+        font-size: clamp(1.65rem, 1.15rem + 2.2vw, 2.6rem);
+        font-weight: 700;
         line-height: 1.2;
-        letter-spacing: 0.014em;
-        color: #2f251c;
+        letter-spacing: 0.02em;
+        color: var(--text-strong);
         text-wrap: balance;
+      }
+
+      .theme-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--surface-2);
+        color: var(--text);
+        font-family: var(--ui-font);
+        font-size: 0.86rem;
+        font-weight: 600;
+        padding: 0.45rem 0.82rem;
+        cursor: pointer;
+        transition: border-color 200ms ease, background-color 200ms ease,
+          color 200ms ease, box-shadow 200ms ease, transform 200ms ease;
+      }
+
+      .theme-toggle:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .theme-toggle .icon {
+        font-size: 1rem;
+        line-height: 1;
       }
 
       main.container {
@@ -72,6 +139,7 @@ const { title } = Astro.props;
 
       .site-footer {
         border-top: 1px solid var(--line);
+        transition: border-color 240ms ease;
       }
 
       .site-footer .container {
@@ -87,12 +155,18 @@ const { title } = Astro.props;
         color: var(--accent);
         text-decoration-thickness: 0.09em;
         text-underline-offset: 0.16em;
-        transition: color 160ms ease;
+        transition: color 180ms ease;
       }
 
       a:hover,
       a:focus-visible {
-        color: #4d3e31;
+        color: var(--accent-hover);
+      }
+
+      :where(a, button):focus-visible {
+        outline: 3px solid var(--focus);
+        outline-offset: 3px;
+        border-radius: 0.4rem;
       }
 
       @media (max-width: 640px) {
@@ -113,6 +187,16 @@ const { title } = Astro.props;
     <header class="site-header">
       <div class="container">
         <p class="brand">Perspectiva Cristã</p>
+        <button
+          type="button"
+          class="theme-toggle"
+          id="theme-toggle"
+          aria-label="Alternar modo escuro"
+          aria-pressed="false"
+        >
+          <span class="icon" aria-hidden="true">☀️</span>
+          <span class="label">Modo noturno</span>
+        </button>
       </div>
     </header>
 
@@ -125,5 +209,41 @@ const { title } = Astro.props;
         <small>© {new Date().getFullYear()} Perspectiva Cristã</small>
       </div>
     </footer>
+
+    <script is:inline>
+      (() => {
+        const STORAGE_KEY = 'perspectiva-theme';
+        const root = document.documentElement;
+        const toggle = document.getElementById('theme-toggle');
+
+        if (!toggle) return;
+
+        const setTheme = (theme) => {
+          const isDark = theme === 'dark';
+          root.classList.toggle('dark', isDark);
+          toggle.setAttribute('aria-pressed', String(isDark));
+          const icon = toggle.querySelector('.icon');
+          const label = toggle.querySelector('.label');
+
+          if (icon) icon.textContent = isDark ? '🌙' : '☀️';
+          if (label) label.textContent = isDark ? 'Modo claro' : 'Modo noturno';
+        };
+
+        const stored = localStorage.getItem(STORAGE_KEY);
+        const preferred =
+          stored ||
+          (window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark'
+            : 'light');
+
+        setTheme(preferred);
+
+        toggle.addEventListener('click', () => {
+          const nextTheme = root.classList.contains('dark') ? 'light' : 'dark';
+          setTheme(nextTheme);
+          localStorage.setItem(STORAGE_KEY, nextTheme);
+        });
+      })();
+    </script>
   </body>
 </html>
