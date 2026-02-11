@@ -1,0 +1,99 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { formatDateBR } from '../utils/formatDateBR';
+import authors from '../data/authors.json';
+
+const posts = (await getCollection('posts')).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+
+const getAuthorName = (authorId: string) =>
+  authors.find((author) => author.id === authorId)?.name ?? 'Autor';
+---
+
+<BaseLayout title="Artigos | Perspectiva Cristã">
+  <section class="articles-page" aria-label="Todos os artigos">
+    <h1>Artigos</h1>
+    <p class="intro">Todos os artigos publicados em Perspectiva Cristã.</p>
+
+    <ul class="article-list">
+      {
+        posts.map((post) => (
+          <li>
+            <a href={`/posts/${post.id}/`}>
+              <span class="title">{post.data.title}</span>
+              <span class="meta">
+                {formatDateBR(post.data.date)} • {getAuthorName(post.data.authorId)}
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  .articles-page {
+    width: min(100%, 900px);
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(2rem, 1.35rem + 2.2vw, 3rem);
+    line-height: 1.15;
+    letter-spacing: -0.012em;
+    color: var(--text);
+  }
+
+  .intro {
+    margin: 0.7rem 0 1.4rem;
+    font-family: var(--ui-font);
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text-soft);
+  }
+
+  .article-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .article-list li a {
+    display: grid;
+    gap: 0.38rem;
+    padding: 0.95rem 1rem;
+    border-radius: 0.85rem;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+    text-decoration: none;
+    transition: transform 200ms ease, box-shadow 200ms ease,
+      border-color 200ms ease;
+  }
+
+  .article-list li a:hover,
+  .article-list li a:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    border-color: color-mix(in srgb, var(--line) 70%, var(--accent) 30%);
+  }
+
+  .title {
+    font-family: var(--heading-font);
+    font-size: clamp(1.16rem, 1.03rem + 0.56vw, 1.45rem);
+    line-height: 1.35;
+    color: var(--text);
+  }
+
+  .meta {
+    font-family: var(--ui-font);
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: var(--text-soft);
+  }
+</style>
