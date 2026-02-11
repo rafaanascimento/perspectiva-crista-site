@@ -13,6 +13,13 @@ const { title } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
     <script is:inline>
       (() => {
         const storedTheme = localStorage.getItem('perspectiva-theme');
@@ -38,8 +45,23 @@ const { title } = Astro.props;
         --shadow-sm: 0 4px 14px rgba(43, 29, 18, 0.08);
         --shadow-lg: 0 16px 34px rgba(43, 29, 18, 0.16);
         --ui-font: 'Inter', 'Avenir Next', 'Segoe UI', Roboto, sans-serif;
-        --heading-font: 'Iowan Old Style', 'Palatino Linotype', Palatino,
-          'Times New Roman', serif;
+        --heading-font: 'Playfair Display', 'Iowan Old Style', 'Palatino Linotype',
+          Palatino, 'Times New Roman', serif;
+      }
+
+      .dark {
+        color-scheme: dark;
+        --bg: #14100d;
+        --surface: #1e1712;
+        --surface-soft: #251d16;
+        --text: #f3e7d8;
+        --text-soft: #d2bda7;
+        --line: #4e3f31;
+        --accent: #f7c58e;
+        --accent-hover: #ffe2c0;
+        --focus: #7eb7ff;
+        --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.3);
+        --shadow-lg: 0 18px 38px rgba(0, 0, 0, 0.46);
       }
 
       .dark {
@@ -67,7 +89,7 @@ const { title } = Astro.props;
         color: var(--text);
         font-family: var(--heading-font);
         font-size: 1.0625rem;
-        line-height: 1.75;
+        line-height: 1.68;
         text-rendering: optimizeLegibility;
         transition: background-color 220ms ease, color 220ms ease;
       }
@@ -83,11 +105,11 @@ const { title } = Astro.props;
       }
 
       .nav-shell {
-        height: clamp(70px, 7vw, 86px);
-        background: color-mix(in srgb, var(--surface) 82%, transparent 18%);
+        height: clamp(70px, 6.4vw, 84px);
+        background: color-mix(in srgb, var(--surface) 78%, transparent 22%);
+        border-bottom: 1px solid color-mix(in srgb, var(--line) 82%, transparent 18%);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
-        border-bottom: 1px solid color-mix(in srgb, var(--line) 82%, transparent 18%);
       }
 
       .nav-inner {
@@ -101,7 +123,8 @@ const { title } = Astro.props;
       .site-nav {
         display: inline-flex;
         align-items: center;
-        gap: clamp(0.55rem, 1.4vw, 1rem);
+        flex-wrap: wrap;
+        gap: 0.75rem;
         font-family: var(--ui-font);
       }
 
@@ -111,7 +134,7 @@ const { title } = Astro.props;
         font-size: 0.93rem;
         font-weight: 600;
         letter-spacing: 0.01em;
-        padding: 0.36rem 0.66rem;
+        padding: 0.4rem 0.68rem;
         border-radius: 999px;
         border: 1px solid transparent;
         transition: color 180ms ease, border-color 180ms ease,
@@ -151,22 +174,64 @@ const { title } = Astro.props;
         line-height: 1;
       }
 
-      .hero-media {
-        width: 100%;
-        height: clamp(260px, 38vw, 420px);
-        max-height: 420px;
+      .hero {
+        position: relative;
+        height: 75vh;
+        min-height: 420px;
+        background-image: url('/header.png');
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
       }
 
-      .hero-media img {
-        width: 100%;
+      .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to top,
+          rgba(0, 0, 0, 0.66) 0%,
+          rgba(0, 0, 0, 0.32) 55%,
+          rgba(0, 0, 0, 0.08) 100%
+        );
+      }
+
+      .hero-content {
+        position: relative;
+        z-index: 1;
         height: 100%;
-        object-fit: cover;
-        object-position: center;
-        display: block;
+        width: min(1200px, 100% - clamp(1.1rem, 3vw, 2.8rem));
+        margin: 0 auto;
+        max-width: 900px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: flex-start;
+        text-align: left;
+        padding: clamp(1.2rem, 2.8vw, 2.2rem) 0 clamp(1.35rem, 3vw, 2.35rem);
+      }
+
+      .hero-content h1 {
+        margin: 0;
+        color: #fff;
+        font-family: var(--heading-font);
+        font-size: clamp(2rem, 1.3rem + 2.9vw, 4rem);
+        line-height: 1.12;
+        letter-spacing: 0.015em;
+        text-shadow: 0 4px 18px rgba(0, 0, 0, 0.55);
+      }
+
+      .hero-content p {
+        margin: 0.65rem 0 0;
+        color: #f3ece2;
+        font-family: var(--ui-font);
+        font-size: clamp(1rem, 0.94rem + 0.6vw, 1.24rem);
+        line-height: 1.62;
+        max-width: 44ch;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
       }
 
       main.container {
-        padding: clamp(1.7rem, 2.5vw, 3rem) 0;
+        padding: clamp(1.5rem, 2.5vw, 2.8rem) 0;
       }
 
       .site-footer {
@@ -182,7 +247,7 @@ const { title } = Astro.props;
         align-items: center;
         justify-content: space-between;
         gap: 1rem;
-        padding: 1.35rem 0 1.55rem;
+        padding: 1.25rem 0 1.45rem;
       }
 
       .footer-copy {
@@ -233,21 +298,13 @@ const { title } = Astro.props;
         border-radius: 0.4rem;
       }
 
-      @media (min-width: 1024px) {
-        .hero-media {
-          height: clamp(420px, 34vw, 520px);
-          max-height: 520px;
+      @media (min-width: 769px) {
+        .hero {
+          background-attachment: fixed;
         }
       }
 
-      @media (max-width: 900px) {
-        .nav-inner {
-          flex-wrap: wrap;
-          row-gap: 0.55rem;
-        }
-      }
-
-      @media (max-width: 760px) {
+      @media (max-width: 768px) {
         body {
           font-size: 1rem;
         }
@@ -261,15 +318,26 @@ const { title } = Astro.props;
         .nav-inner {
           align-items: flex-start;
           flex-direction: column;
+          gap: 0.6rem;
         }
 
-        .site-nav {
-          flex-wrap: wrap;
+        .hero {
+          height: 65vh;
+          min-height: 320px;
         }
 
-        .hero-media {
-          height: clamp(260px, 56vw, 340px);
-          max-height: 340px;
+        .hero-content {
+          width: min(1200px, 100% - 1.25rem);
+          padding-bottom: 1.4rem;
+        }
+
+        .hero-content p {
+          max-width: 34ch;
+        }
+
+        main.container {
+          padding-top: 1.3rem;
+          padding-bottom: 2rem;
         }
 
         .footer-wrap {
@@ -302,13 +370,13 @@ const { title } = Astro.props;
         </div>
       </div>
 
-      <div class="hero-media">
-        <img
-          src="/images/header-art.png"
-          alt="Arte de cabeçalho do site Perspectiva Cristã"
-          loading="eager"
-        />
-      </div>
+      <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <h1>Perspectiva Cristã</h1>
+          <p>Reflexões bíblicas, fé e propósito para o dia a dia.</p>
+        </div>
+      </section>
     </header>
 
     <main class="container">

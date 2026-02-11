@@ -30,11 +30,6 @@ const fallbackCover =
 ---
 
 <BaseLayout title="Perspectiva Cristã">
-  <header class="hero">
-    <h1 class="site-title">Perspectiva Cristã</h1>
-    <p>Reflexões bíblicas, fé e propósito para o dia a dia.</p>
-  </header>
-
   <section class="posts" aria-label="Lista de artigos">
     <h2>Artigos</h2>
 
@@ -95,30 +90,9 @@ const fallbackCover =
 </BaseLayout>
 
 <style>
-  .hero {
-    margin-bottom: clamp(2rem, 2vw, 2.6rem);
-  }
-
-  .site-title {
-    margin: 0;
-    font-family: var(--heading-font);
-    font-size: clamp(2.1rem, 1.25rem + 3vw, 3.5rem);
-    line-height: 1.14;
-    letter-spacing: -0.012em;
-    color: var(--text);
-  }
-
-  .hero p {
-    margin: 0.7rem 0 0;
-    color: var(--text-soft);
-    font-family: var(--ui-font);
-    max-width: 64ch;
-    font-size: clamp(1.01rem, 0.95rem + 0.4vw, 1.15rem);
-    line-height: 1.6;
-  }
-
   .posts h2,
   .newsletter h2 {
+    margin-top: 0;
     margin: 0 0 1.1rem;
     font-family: var(--ui-font);
     font-size: 0.92rem;
