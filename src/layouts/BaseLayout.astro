@@ -80,125 +80,89 @@ const { title } = Astro.props;
       .site-header {
         position: relative;
         border-bottom: 1px solid var(--line);
-        overflow: hidden;
       }
 
-      .header-media {
-        position: relative;
-        min-height: clamp(250px, 36vw, 460px);
+      .nav-shell {
+        height: clamp(70px, 7vw, 86px);
+        background: color-mix(in srgb, var(--surface) 82%, transparent 18%);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-bottom: 1px solid color-mix(in srgb, var(--line) 82%, transparent 18%);
       }
 
-      .header-media img {
-        width: 100%;
+      .nav-inner {
         height: 100%;
-        min-height: inherit;
-        object-fit: cover;
-        display: block;
-      }
-
-      .header-media::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-          to bottom,
-          rgba(0, 0, 0, 0.2) 0%,
-          rgba(0, 0, 0, 0.34) 45%,
-          rgba(0, 0, 0, 0.55) 100%
-        );
-      }
-
-      .header-content {
-        position: absolute;
-        inset: 0;
-        display: grid;
-        grid-template-rows: auto 1fr;
-        padding-top: clamp(0.85rem, 1.7vw, 1.3rem);
-        padding-bottom: clamp(0.9rem, 2vw, 1.5rem);
-      }
-
-      .header-top {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 0.8rem;
+        gap: 1rem;
       }
 
       .site-nav {
         display: inline-flex;
         align-items: center;
-        gap: 0.7rem;
+        gap: clamp(0.55rem, 1.4vw, 1rem);
         font-family: var(--ui-font);
       }
 
       .site-nav a {
         text-decoration: none;
-        color: #fff;
-        font-size: 0.9rem;
+        color: var(--text-soft);
+        font-size: 0.93rem;
         font-weight: 600;
         letter-spacing: 0.01em;
-        padding: 0.36rem 0.64rem;
+        padding: 0.36rem 0.66rem;
         border-radius: 999px;
-        border: 1px solid rgba(255, 255, 255, 0.42);
-        background: rgba(0, 0, 0, 0.26);
-        backdrop-filter: blur(2px);
+        border: 1px solid transparent;
         transition: color 180ms ease, border-color 180ms ease,
           background-color 180ms ease;
       }
 
       .site-nav a:hover,
       .site-nav a:focus-visible {
-        color: #fff;
-        border-color: rgba(255, 255, 255, 0.9);
-        background: rgba(0, 0, 0, 0.44);
+        color: var(--text);
+        border-color: var(--line);
+        background: var(--surface-soft);
       }
 
       .theme-toggle {
         display: inline-flex;
         align-items: center;
         gap: 0.45rem;
-        border: 1px solid rgba(255, 255, 255, 0.45);
+        border: 1px solid var(--line);
         border-radius: 999px;
-        background: rgba(0, 0, 0, 0.26);
-        color: #fff;
+        background: var(--surface-soft);
+        color: var(--text);
         font-family: var(--ui-font);
         font-size: 0.87rem;
         font-weight: 600;
         padding: 0.46rem 0.84rem;
         cursor: pointer;
-        backdrop-filter: blur(2px);
         transition: transform 200ms ease, box-shadow 200ms ease,
           border-color 200ms ease, background-color 200ms ease;
       }
 
       .theme-toggle:hover {
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22);
+        box-shadow: var(--shadow-sm);
       }
 
       .theme-toggle .icon {
         line-height: 1;
       }
 
-      .brand {
-        grid-column: 2;
-        margin: 0;
-        align-self: end;
+      .hero-media {
+        width: 100%;
+        height: clamp(260px, 38vw, 420px);
+        max-height: 420px;
       }
 
-      .brand-link {
-        font-family: var(--heading-font);
-        font-size: clamp(1.95rem, 1.35rem + 2.4vw, 3.2rem);
-        font-weight: 700;
-        line-height: 1.16;
-        letter-spacing: 0.02em;
-        color: #fff;
-        text-decoration: none;
-        text-shadow: 0 3px 16px rgba(0, 0, 0, 0.62);
-        display: inline-block;
-        background: rgba(0, 0, 0, 0.22);
-        padding: 0.25rem 0.6rem;
-        border-radius: 0.45rem;
+      .hero-media img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        display: block;
       }
 
       main.container {
@@ -269,19 +233,17 @@ const { title } = Astro.props;
         border-radius: 0.4rem;
       }
 
+      @media (min-width: 1024px) {
+        .hero-media {
+          height: clamp(420px, 34vw, 520px);
+          max-height: 520px;
+        }
+      }
+
       @media (max-width: 900px) {
-        .header-top {
+        .nav-inner {
           flex-wrap: wrap;
-          gap: 0.55rem;
-        }
-
-        .site-nav {
-          order: 1;
-        }
-
-        .theme-toggle {
-          order: 2;
-          margin-left: auto;
+          row-gap: 0.55rem;
         }
       }
 
@@ -290,11 +252,13 @@ const { title } = Astro.props;
           font-size: 1rem;
         }
 
-        .header-media {
-          min-height: 250px;
+        .nav-shell {
+          height: auto;
+          min-height: 70px;
+          padding: 0.6rem 0;
         }
 
-        .header-top {
+        .nav-inner {
           align-items: flex-start;
           flex-direction: column;
         }
@@ -303,12 +267,9 @@ const { title } = Astro.props;
           flex-wrap: wrap;
         }
 
-        .theme-toggle {
-          margin-left: 0;
-        }
-
-        .brand-link {
-          font-size: clamp(1.45rem, 1.25rem + 2.2vw, 1.95rem);
+        .hero-media {
+          height: clamp(260px, 56vw, 340px);
+          max-height: 340px;
         }
 
         .footer-wrap {
@@ -321,16 +282,8 @@ const { title } = Astro.props;
 
   <body>
     <header class="site-header">
-      <div class="header-media">
-        <img
-          src="/images/header-art.png"
-          alt="Arte de cabeçalho do site Perspectiva Cristã"
-          loading="eager"
-        />
-      </div>
-
-      <div class="container header-content">
-        <div class="header-top">
+      <div class="nav-shell">
+        <div class="container nav-inner">
           <nav class="site-nav" aria-label="Navegação principal">
             <a href="/">Início</a>
             <a href="/artigos">Artigos</a>
@@ -347,10 +300,14 @@ const { title } = Astro.props;
             <span class="label">Modo Noturno</span>
           </button>
         </div>
+      </div>
 
-        <p class="brand">
-          <a class="brand-link" href="/">Perspectiva Cristã</a>
-        </p>
+      <div class="hero-media">
+        <img
+          src="/images/header-art.png"
+          alt="Arte de cabeçalho do site Perspectiva Cristã"
+          loading="eager"
+        />
       </div>
     </header>
 
