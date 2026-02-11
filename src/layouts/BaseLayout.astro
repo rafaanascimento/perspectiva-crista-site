@@ -78,88 +78,127 @@ const { title } = Astro.props;
       }
 
       .site-header {
+        position: relative;
         border-bottom: 1px solid var(--line);
-        background: color-mix(in srgb, var(--surface) 90%, var(--bg) 10%);
-        transition: border-color 220ms ease, background-color 220ms ease;
+        overflow: hidden;
       }
 
-      .site-header .container {
+      .header-media {
+        position: relative;
+        min-height: clamp(250px, 36vw, 460px);
+      }
+
+      .header-media img {
+        width: 100%;
+        height: 100%;
+        min-height: inherit;
+        object-fit: cover;
+        display: block;
+      }
+
+      .header-media::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to bottom,
+          rgba(0, 0, 0, 0.2) 0%,
+          rgba(0, 0, 0, 0.34) 45%,
+          rgba(0, 0, 0, 0.55) 100%
+        );
+      }
+
+      .header-content {
+        position: absolute;
+        inset: 0;
         display: grid;
-        grid-template-columns: auto 1fr auto auto;
+        grid-template-rows: auto 1fr;
+        padding-top: clamp(0.85rem, 1.7vw, 1.3rem);
+        padding-bottom: clamp(0.9rem, 2vw, 1.5rem);
+      }
+
+      .header-top {
+        display: flex;
         align-items: center;
-        gap: clamp(0.65rem, 1.2vw, 1.2rem);
-        padding: clamp(1rem, 2vw, 1.5rem) 0;
-      }
-
-      .brand {
-        grid-column: 2;
-        margin: 0;
-      }
-
-      .brand-link {
-        font-family: var(--heading-font);
-        font-size: clamp(1.45rem, 1rem + 1.8vw, 2.25rem);
-        font-weight: 700;
-        line-height: 1.2;
-        letter-spacing: 0.018em;
-        color: var(--text);
-        text-decoration: none;
-        display: inline-block;
+        justify-content: space-between;
+        gap: 0.8rem;
       }
 
       .site-nav {
         display: inline-flex;
         align-items: center;
-        gap: 0.75rem;
-        justify-self: end;
+        gap: 0.7rem;
         font-family: var(--ui-font);
       }
 
       .site-nav a {
         text-decoration: none;
-        color: var(--text-soft);
+        color: #fff;
         font-size: 0.9rem;
         font-weight: 600;
         letter-spacing: 0.01em;
-        padding: 0.35rem 0.62rem;
+        padding: 0.36rem 0.64rem;
         border-radius: 999px;
-        border: 1px solid transparent;
+        border: 1px solid rgba(255, 255, 255, 0.42);
+        background: rgba(0, 0, 0, 0.26);
+        backdrop-filter: blur(2px);
         transition: color 180ms ease, border-color 180ms ease,
           background-color 180ms ease;
       }
 
       .site-nav a:hover,
       .site-nav a:focus-visible {
-        color: var(--text);
-        border-color: var(--line);
-        background: var(--surface-soft);
+        color: #fff;
+        border-color: rgba(255, 255, 255, 0.9);
+        background: rgba(0, 0, 0, 0.44);
       }
 
       .theme-toggle {
-        justify-self: end;
         display: inline-flex;
         align-items: center;
         gap: 0.45rem;
-        border: 1px solid var(--line);
+        border: 1px solid rgba(255, 255, 255, 0.45);
         border-radius: 999px;
-        background: var(--surface-soft);
-        color: var(--text);
+        background: rgba(0, 0, 0, 0.26);
+        color: #fff;
         font-family: var(--ui-font);
         font-size: 0.87rem;
         font-weight: 600;
         padding: 0.46rem 0.84rem;
         cursor: pointer;
+        backdrop-filter: blur(2px);
         transition: transform 200ms ease, box-shadow 200ms ease,
-          border-color 200ms ease, background-color 200ms ease, color 200ms ease;
+          border-color 200ms ease, background-color 200ms ease;
       }
 
       .theme-toggle:hover {
         transform: translateY(-1px);
-        box-shadow: var(--shadow-sm);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22);
       }
 
       .theme-toggle .icon {
         line-height: 1;
+      }
+
+      .brand {
+        grid-column: 2;
+        margin: 0;
+        align-self: end;
+      }
+
+      .brand-link {
+        font-family: var(--heading-font);
+        font-size: clamp(1.95rem, 1.35rem + 2.4vw, 3.2rem);
+        font-weight: 700;
+        line-height: 1.16;
+        letter-spacing: 0.02em;
+        color: #fff;
+        text-decoration: none;
+        text-shadow: 0 3px 16px rgba(0, 0, 0, 0.62);
+        display: inline-block;
+        background: rgba(0, 0, 0, 0.22);
+        padding: 0.25rem 0.6rem;
+        border-radius: 0.45rem;
       }
 
       main.container {
@@ -231,18 +270,18 @@ const { title } = Astro.props;
       }
 
       @media (max-width: 900px) {
-        .site-header .container {
-          grid-template-columns: 1fr auto;
-          row-gap: 0.65rem;
-        }
-
-        .brand {
-          grid-column: 1 / -1;
+        .header-top {
+          flex-wrap: wrap;
+          gap: 0.55rem;
         }
 
         .site-nav {
-          justify-self: start;
-          flex-wrap: wrap;
+          order: 1;
+        }
+
+        .theme-toggle {
+          order: 2;
+          margin-left: auto;
         }
       }
 
@@ -251,8 +290,25 @@ const { title } = Astro.props;
           font-size: 1rem;
         }
 
+        .header-media {
+          min-height: 250px;
+        }
+
+        .header-top {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .site-nav {
+          flex-wrap: wrap;
+        }
+
+        .theme-toggle {
+          margin-left: 0;
+        }
+
         .brand-link {
-          font-size: clamp(1.5rem, 1.2rem + 2.4vw, 2rem);
+          font-size: clamp(1.45rem, 1.25rem + 2.2vw, 1.95rem);
         }
 
         .footer-wrap {
@@ -265,26 +321,36 @@ const { title } = Astro.props;
 
   <body>
     <header class="site-header">
-      <div class="container">
+      <div class="header-media">
+        <img
+          src="/images/header-art.png"
+          alt="Arte de cabeçalho do site Perspectiva Cristã"
+          loading="eager"
+        />
+      </div>
+
+      <div class="container header-content">
+        <div class="header-top">
+          <nav class="site-nav" aria-label="Navegação principal">
+            <a href="/">Início</a>
+            <a href="/artigos">Artigos</a>
+          </nav>
+
+          <button
+            type="button"
+            class="theme-toggle"
+            id="theme-toggle"
+            aria-label="Alternar modo noturno"
+            aria-pressed="false"
+          >
+            <span class="icon" aria-hidden="true">🌙</span>
+            <span class="label">Modo Noturno</span>
+          </button>
+        </div>
+
         <p class="brand">
           <a class="brand-link" href="/">Perspectiva Cristã</a>
         </p>
-
-        <nav class="site-nav" aria-label="Navegação principal">
-          <a href="/">Início</a>
-          <a href="/artigos">Artigos</a>
-        </nav>
-
-        <button
-          type="button"
-          class="theme-toggle"
-          id="theme-toggle"
-          aria-label="Alternar modo noturno"
-          aria-pressed="false"
-        >
-          <span class="icon" aria-hidden="true">🌙</span>
-          <span class="label">Modo Noturno</span>
-        </button>
       </div>
     </header>
 
