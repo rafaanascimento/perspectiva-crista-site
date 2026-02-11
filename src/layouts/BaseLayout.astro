@@ -64,21 +64,6 @@ const { title } = Astro.props;
         --shadow-lg: 0 18px 38px rgba(0, 0, 0, 0.46);
       }
 
-      .dark {
-        color-scheme: dark;
-        --bg: #14100d;
-        --surface: #1e1712;
-        --surface-soft: #251d16;
-        --text: #f3e7d8;
-        --text-soft: #d2bda7;
-        --line: #4e3f31;
-        --accent: #f7c58e;
-        --accent-hover: #ffe2c0;
-        --focus: #7eb7ff;
-        --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.3);
-        --shadow-lg: 0 18px 38px rgba(0, 0, 0, 0.46);
-      }
-
       * {
         box-sizing: border-box;
       }
@@ -178,7 +163,7 @@ const { title } = Astro.props;
         position: relative;
         height: 75vh;
         min-height: 420px;
-        background-image: url('/header.png');
+        background-image: url('/images/header.png'), url('/images/post-cover.jpg');
         background-size: cover;
         background-position: center center;
         background-repeat: no-repeat;
