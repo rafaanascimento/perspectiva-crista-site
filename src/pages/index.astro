@@ -73,55 +73,63 @@ const fallbackCover =
 
 <style>
   .hero {
-    margin-bottom: 2rem;
+    margin-bottom: clamp(2.2rem, 1.7rem + 2vw, 3rem);
   }
 
   .site-title {
     margin: 0;
-    font-size: clamp(2rem, 1.2rem + 2.5vw, 3rem);
-    line-height: 1.15;
-    letter-spacing: -0.015em;
-    color: #241d17;
+    font-size: clamp(2.2rem, 1.25rem + 3vw, 3.45rem);
+    line-height: 1.1;
+    letter-spacing: -0.014em;
+    color: var(--text-strong);
+    text-wrap: balance;
   }
 
   .hero p {
-    margin: 0.6rem 0 0;
-    color: #62584d;
+    margin: 0.75rem 0 0;
+    color: var(--muted);
     max-width: 62ch;
-    font-size: 1.05rem;
+    font-size: clamp(1.05rem, 1rem + 0.45vw, 1.2rem);
+    line-height: 1.65;
   }
 
   .posts h2 {
     margin: 0 0 1rem;
-    font-size: 1.05rem;
-    font-family: 'Inter', 'Avenir Next', 'Segoe UI', Roboto, sans-serif;
+    font-size: 0.95rem;
+    font-family: var(--ui-font);
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: #6d6052;
+    letter-spacing: 0.12em;
+    color: var(--muted);
   }
 
   .grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 1.1rem;
+    gap: 1.2rem;
   }
 
   .card {
     display: block;
     overflow: hidden;
-    border-radius: 0.9rem;
-    border: 1px solid #ddd3c5;
-    background: #fffdf8;
+    border-radius: 1rem;
+    border: 1px solid var(--line);
+    background: var(--surface);
     text-decoration: none;
-    transition: transform 180ms ease, box-shadow 180ms ease,
-      border-color 180ms ease;
+    box-shadow: var(--shadow-sm);
+    transition: transform 200ms ease, box-shadow 200ms ease,
+      border-color 200ms ease, background-color 200ms ease;
   }
 
   .card:hover,
   .card:focus-visible {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 22px rgba(58, 43, 30, 0.09);
-    border-color: #cfc1af;
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    border-color: color-mix(in srgb, var(--line) 68%, var(--accent) 32%);
+  }
+
+  .card:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 3px;
   }
 
   .card img {
@@ -129,32 +137,34 @@ const fallbackCover =
     width: 100%;
     aspect-ratio: 16 / 9;
     object-fit: cover;
-    background: #f2ece3;
-    border-bottom: 1px solid #e1d7c9;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--line);
+    transition: border-color 200ms ease, background-color 200ms ease;
   }
 
   .card-body {
-    padding: 1rem 1.05rem 1.1rem;
+    padding: 1.1rem 1.1rem 1.2rem;
   }
 
   .card h3 {
     margin: 0;
-    font-size: clamp(1.2rem, 1rem + 0.7vw, 1.45rem);
+    font-size: clamp(1.26rem, 1.04rem + 0.8vw, 1.56rem);
     line-height: 1.35;
-    color: #2d241b;
+    color: var(--text-strong);
   }
 
   .meta {
-    margin: 0.55rem 0 0;
-    font-family: 'Inter', 'Avenir Next', 'Segoe UI', Roboto, sans-serif;
-    font-size: 0.88rem;
-    color: #6d6155;
+    margin: 0.6rem 0 0;
+    font-family: var(--ui-font);
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: var(--muted);
   }
 
   @media (min-width: 700px) {
     .grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 1.25rem;
+      gap: 1.3rem;
     }
   }
 
@@ -164,4 +174,3 @@ const fallbackCover =
     }
   }
 </style>
-
