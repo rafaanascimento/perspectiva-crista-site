@@ -73,57 +73,59 @@ const fallbackCover =
 
 <style>
   .hero {
-    margin-bottom: clamp(2.2rem, 1.7rem + 2vw, 3rem);
+    margin-bottom: clamp(2.2rem, 2vw, 3rem);
   }
 
   .site-title {
     margin: 0;
-    font-size: clamp(2.2rem, 1.25rem + 3vw, 3.45rem);
-    line-height: 1.1;
-    letter-spacing: -0.014em;
-    color: var(--text-strong);
-    text-wrap: balance;
+    font-family: var(--heading-font);
+    font-size: clamp(2.15rem, 1.2rem + 3vw, 3.7rem);
+    line-height: 1.12;
+    letter-spacing: -0.012em;
+    color: var(--text);
   }
 
   .hero p {
-    margin: 0.75rem 0 0;
-    color: var(--muted);
-    max-width: 62ch;
-    font-size: clamp(1.05rem, 1rem + 0.45vw, 1.2rem);
+    margin: 0.8rem 0 0;
+    color: var(--text-soft);
+    font-family: var(--ui-font);
+    max-width: 64ch;
+    font-size: clamp(1.02rem, 0.95rem + 0.4vw, 1.2rem);
     line-height: 1.65;
   }
 
   .posts h2 {
-    margin: 0 0 1rem;
-    font-size: 0.95rem;
+    margin: 0 0 1.1rem;
     font-family: var(--ui-font);
+    font-size: 0.92rem;
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    color: var(--muted);
+    color: var(--text-soft);
   }
 
   .grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.2rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.8rem;
   }
 
   .card {
-    display: block;
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
     border-radius: 1rem;
     border: 1px solid var(--line);
     background: var(--surface);
-    text-decoration: none;
     box-shadow: var(--shadow-sm);
-    transition: transform 200ms ease, box-shadow 200ms ease,
-      border-color 200ms ease, background-color 200ms ease;
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease,
+      border-color 0.2s ease, background-color 0.2s ease;
   }
 
   .card:hover,
   .card:focus-visible {
     transform: translateY(-4px);
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-lg);
     border-color: color-mix(in srgb, var(--line) 68%, var(--accent) 32%);
   }
 
@@ -137,40 +139,27 @@ const fallbackCover =
     width: 100%;
     aspect-ratio: 16 / 9;
     object-fit: cover;
-    background: var(--surface-2);
+    background: var(--surface-soft);
     border-bottom: 1px solid var(--line);
-    transition: border-color 200ms ease, background-color 200ms ease;
   }
 
   .card-body {
-    padding: 1.1rem 1.1rem 1.2rem;
+    padding: 1.15rem 1.15rem 1.2rem;
   }
 
   .card h3 {
     margin: 0;
-    font-size: clamp(1.26rem, 1.04rem + 0.8vw, 1.56rem);
+    font-size: clamp(1.2rem, 1.04rem + 0.7vw, 1.55rem);
     line-height: 1.35;
-    color: var(--text-strong);
+    color: var(--text);
+    font-family: var(--heading-font);
   }
 
   .meta {
-    margin: 0.6rem 0 0;
+    margin: 0.64rem 0 0;
     font-family: var(--ui-font);
     font-size: 0.92rem;
     line-height: 1.5;
-    color: var(--muted);
-  }
-
-  @media (min-width: 700px) {
-    .grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 1.3rem;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .grid {
-      gap: 1.4rem;
-    }
+    color: var(--text-soft);
   }
 </style>

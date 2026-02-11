@@ -26,37 +26,35 @@ const { title } = Astro.props;
     <style>
       :root {
         color-scheme: light;
-        --bg: #f4efe8;
+        --bg: #f5efe8;
         --surface: #fffdf9;
-        --surface-2: #fbf6ee;
-        --line: #c9bbab;
-        --text: #211a13;
-        --text-strong: #17110d;
-        --muted: #5a4f43;
-        --accent: #5e4633;
-        --accent-hover: #3f2f24;
+        --surface-soft: #f7f1e8;
+        --text: #1f1812;
+        --text-soft: #5b4f43;
+        --line: #ccbca9;
+        --accent: #5c432f;
+        --accent-hover: #3b2b1f;
         --focus: #0f62fe;
-        --shadow-sm: 0 2px 8px rgba(39, 26, 16, 0.08);
-        --shadow-md: 0 10px 30px rgba(39, 26, 16, 0.12);
+        --shadow-sm: 0 4px 14px rgba(43, 29, 18, 0.08);
+        --shadow-lg: 0 16px 34px rgba(43, 29, 18, 0.16);
         --ui-font: 'Inter', 'Avenir Next', 'Segoe UI', Roboto, sans-serif;
-        --content-font: 'Iowan Old Style', 'Palatino Linotype', Palatino,
+        --heading-font: 'Iowan Old Style', 'Palatino Linotype', Palatino,
           'Times New Roman', serif;
       }
 
       .dark {
         color-scheme: dark;
-        --bg: #17130f;
-        --surface: #211a13;
-        --surface-2: #281f17;
-        --line: #4b3d2f;
-        --text: #efe4d7;
-        --text-strong: #fff6eb;
-        --muted: #c8b6a2;
-        --accent: #f4c58c;
-        --accent-hover: #ffe0b9;
-        --focus: #7ab8ff;
-        --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.36);
-        --shadow-md: 0 14px 36px rgba(0, 0, 0, 0.46);
+        --bg: #14100d;
+        --surface: #1e1712;
+        --surface-soft: #251d16;
+        --text: #f3e7d8;
+        --text-soft: #d2bda7;
+        --line: #4e3f31;
+        --accent: #f7c58e;
+        --accent-hover: #ffe2c0;
+        --focus: #7eb7ff;
+        --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.3);
+        --shadow-lg: 0 18px 38px rgba(0, 0, 0, 0.46);
       }
 
       * {
@@ -67,42 +65,69 @@ const { title } = Astro.props;
         margin: 0;
         background: var(--bg);
         color: var(--text);
-        font-family: var(--content-font);
+        font-family: var(--heading-font);
         font-size: 1.0625rem;
         line-height: 1.75;
-        letter-spacing: 0.005em;
         text-rendering: optimizeLegibility;
-        transition: background-color 240ms ease, color 240ms ease;
+        transition: background-color 220ms ease, color 220ms ease;
       }
 
       .container {
-        width: min(920px, calc(100% - 2rem));
+        width: min(1200px, 100% - clamp(1rem, 3vw, 2.6rem));
         margin: 0 auto;
       }
 
       .site-header {
         border-bottom: 1px solid var(--line);
-        background: color-mix(in srgb, var(--surface) 92%, var(--bg) 8%);
-        transition: background-color 240ms ease, border-color 240ms ease;
+        background: color-mix(in srgb, var(--surface) 90%, var(--bg) 10%);
+        transition: border-color 220ms ease, background-color 220ms ease;
       }
 
       .site-header .container {
-        display: flex;
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
         align-items: center;
-        justify-content: space-between;
-        gap: 1rem;
-        padding: 1.25rem 0;
+        padding: clamp(1rem, 2vw, 1.5rem) 0;
       }
 
       .brand {
+        grid-column: 2;
         margin: 0;
-        font-family: var(--content-font);
-        font-size: clamp(1.65rem, 1.15rem + 2.2vw, 2.6rem);
+        font-family: var(--heading-font);
+        font-size: clamp(1.9rem, 1.3rem + 2vw, 3rem);
         font-weight: 700;
-        line-height: 1.2;
+        line-height: 1.25;
         letter-spacing: 0.02em;
-        color: var(--text-strong);
-        text-wrap: balance;
+        color: var(--text);
+        text-align: center;
+      }
+
+      .theme-toggle {
+        grid-column: 3;
+        justify-self: end;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--surface-soft);
+        color: var(--text);
+        font-family: var(--ui-font);
+        font-size: 0.87rem;
+        font-weight: 600;
+        padding: 0.46rem 0.84rem;
+        cursor: pointer;
+        transition: transform 200ms ease, box-shadow 200ms ease,
+          border-color 200ms ease, background-color 200ms ease, color 200ms ease;
+      }
+
+      .theme-toggle:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .theme-toggle .icon {
+        line-height: 1;
       }
 
       .theme-toggle {
@@ -134,28 +159,60 @@ const { title } = Astro.props;
       }
 
       main.container {
-        padding: clamp(2rem, 1.2rem + 3vw, 4rem) 0;
+        padding: clamp(2rem, 2.5vw, 3.5rem) 0;
       }
 
       .site-footer {
+        margin-top: 1rem;
         border-top: 1px solid var(--line);
-        transition: border-color 240ms ease;
+        background: var(--surface);
+        transition: border-color 220ms ease, background-color 220ms ease;
       }
 
-      .site-footer .container {
-        padding: 1.2rem 0 1.5rem;
+      .footer-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1.35rem 0 1.55rem;
       }
 
-      .site-footer small {
+      .footer-copy {
+        display: grid;
+        gap: 0.2rem;
+      }
+
+      .footer-copy small {
+        color: var(--text-soft);
         font-family: var(--ui-font);
-        color: var(--muted);
+      }
+
+      .footer-links {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.8rem;
+        font-family: var(--ui-font);
+        font-size: 0.95rem;
+      }
+
+      .footer-links a {
+        color: var(--accent);
+        text-decoration: none;
+        border-bottom: 1px solid transparent;
+        transition: color 180ms ease, border-color 180ms ease;
+      }
+
+      .footer-links a:hover,
+      .footer-links a:focus-visible {
+        color: var(--accent-hover);
+        border-color: currentColor;
       }
 
       a {
         color: var(--accent);
         text-decoration-thickness: 0.09em;
         text-underline-offset: 0.16em;
-        transition: color 180ms ease;
       }
 
       a:hover,
@@ -169,15 +226,29 @@ const { title } = Astro.props;
         border-radius: 0.4rem;
       }
 
-      @media (max-width: 640px) {
+      @media (max-width: 760px) {
         body {
           font-size: 1rem;
         }
 
-        .site-header .container,
-        .site-footer .container {
-          padding-left: 0.15rem;
-          padding-right: 0.15rem;
+        .site-header .container {
+          grid-template-columns: 1fr auto;
+          row-gap: 0.8rem;
+        }
+
+        .brand {
+          grid-column: 1 / -1;
+          font-size: clamp(1.7rem, 1.3rem + 2.8vw, 2.45rem);
+        }
+
+        .theme-toggle {
+          grid-column: 2;
+          justify-self: end;
+        }
+
+        .footer-wrap {
+          align-items: flex-start;
+          flex-direction: column;
         }
       }
     </style>
@@ -191,11 +262,11 @@ const { title } = Astro.props;
           type="button"
           class="theme-toggle"
           id="theme-toggle"
-          aria-label="Alternar modo escuro"
+          aria-label="Alternar modo noturno"
           aria-pressed="false"
         >
-          <span class="icon" aria-hidden="true">☀️</span>
-          <span class="label">Modo noturno</span>
+          <span class="icon" aria-hidden="true">🌙</span>
+          <span class="label">Modo Noturno</span>
         </button>
       </div>
     </header>
@@ -205,8 +276,21 @@ const { title } = Astro.props;
     </main>
 
     <footer class="site-footer">
-      <div class="container">
-        <small>© {new Date().getFullYear()} Perspectiva Cristã</small>
+      <div class="container footer-wrap">
+        <div class="footer-copy">
+          <small>© 2026 Perspectiva Cristã</small>
+          <small>Desenvolvido por Rafael</small>
+        </div>
+        <nav class="footer-links" aria-label="Links sociais">
+          <a href="https://github.com/rafaanascimento" target="_blank" rel="noreferrer noopener">GitHub</a>
+          <a
+            href="https://www.linkedin.com/in/rafael-nascimento-260355156/"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            LinkedIn
+          </a>
+        </nav>
       </div>
     </footer>
 
@@ -218,15 +302,15 @@ const { title } = Astro.props;
 
         if (!toggle) return;
 
+        const label = toggle.querySelector('.label');
+        const icon = toggle.querySelector('.icon');
+
         const setTheme = (theme) => {
           const isDark = theme === 'dark';
           root.classList.toggle('dark', isDark);
           toggle.setAttribute('aria-pressed', String(isDark));
-          const icon = toggle.querySelector('.icon');
-          const label = toggle.querySelector('.label');
-
-          if (icon) icon.textContent = isDark ? '🌙' : '☀️';
-          if (label) label.textContent = isDark ? 'Modo claro' : 'Modo noturno';
+          if (label) label.textContent = isDark ? 'Modo Claro' : 'Modo Noturno';
+          if (icon) icon.textContent = isDark ? '☀️' : '🌙';
         };
 
         const stored = localStorage.getItem(STORAGE_KEY);

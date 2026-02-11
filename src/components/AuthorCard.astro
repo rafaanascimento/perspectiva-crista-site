@@ -45,18 +45,16 @@ const fallbackAvatar =
     gap: 1rem;
     margin-top: 0.3rem;
     padding: 1rem 1.1rem;
-    border-radius: 0.8rem;
+    border-radius: 0.9rem;
     background: var(--surface);
     border: 1px solid var(--line);
     box-shadow: var(--shadow-sm);
-    transition: background-color 220ms ease, border-color 220ms ease,
-      box-shadow 220ms ease;
   }
 
   img {
     border-radius: 9999px;
     object-fit: cover;
-    background: var(--surface-2);
+    background: var(--surface-soft);
     border: 1px solid var(--line);
     flex: 0 0 auto;
   }
@@ -71,22 +69,23 @@ const fallbackAvatar =
     font-size: 0.76rem;
     text-transform: uppercase;
     letter-spacing: 0.11em;
-    color: var(--muted);
+    color: var(--text-soft);
   }
 
   h3 {
     margin: 0.28rem 0 0.3rem;
     font-size: 1.15rem;
     line-height: 1.25;
-    color: var(--text-strong);
-    font-family: var(--ui-font);
+    color: var(--text);
+    font-family: var(--heading-font);
   }
 
   .bio {
     margin: 0;
     font-size: 0.97rem;
     line-height: 1.55;
-    color: var(--text);
+    color: var(--text-soft);
+    font-family: var(--ui-font);
   }
 
   @media (max-width: 640px) {
