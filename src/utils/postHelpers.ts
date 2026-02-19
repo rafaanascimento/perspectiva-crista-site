@@ -1,7 +1,6 @@
 import authors from '../data/authors.json';
 
 const FALLBACK_AUTHOR = {
-  id: 'fallback',
   name: 'Autor',
   avatar: '/images/og-default.png',
   role: 'Equipe Perspectiva Cristã',
@@ -33,4 +32,3 @@ export const getAuthorName = (authorId?: string) =>
 
 export const getAuthorProfile = (authorId?: string) =>
   authors.find((author) => author.id === authorId) ?? FALLBACK_AUTHOR;
-
