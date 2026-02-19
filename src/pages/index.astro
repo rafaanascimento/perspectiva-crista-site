@@ -3,20 +3,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { formatDateBR } from '../utils/formatDateBR';
 import { getReadingTimeLabel } from '../utils/readingTime';
-import authors from '../data/authors.json';
+import { getAuthorName, getCoverPath, getPostSlug } from '../utils/postHelpers';
 import PostCard from '../components/PostCard.astro';
 
 const posts = (await getCollection('posts')).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime()
 );
-
-const getAuthorName = (authorId: string) =>
-  authors.find((author) => author.id === authorId)?.name ?? 'Autor';
-
-const getCoverPath = (cover: string | undefined) => {
-  if (!cover) return '/images/post-cover.jpg';
-  return cover.startsWith('/') ? cover : `/${cover}`;
-};
 
 const latestPostId = posts[0]?.id;
 
@@ -48,7 +40,7 @@ const fallbackCover =
         {
           posts.map((post) => (
             <PostCard
-              url={`/posts/${post.data.slug ?? post.id}/`}
+              url={`/posts/${getPostSlug(post)}/`}
               cover={getCoverPath(post.data.cover)}
               title={post.data.title}
               displayTitle={getCardTitle(post.id, post.data.title)}

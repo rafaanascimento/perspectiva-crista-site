@@ -9,7 +9,8 @@ const posts = defineCollection({
     category: z.string().default('Geral'),
     tags: z.array(z.string()).default([]),
     cover: z.string().default('/images/og-default.png'),
-    slug: z.string().optional()
+    slug: z.string().optional(),
+    series: z.string().optional()
   })
 });
 

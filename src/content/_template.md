@@ -9,6 +9,10 @@ tags:
   - "tag-2"
 cover: "/images/post-cover.jpg"
 slug: "slug-do-artigo" # opcional (se omitido, usa o nome do arquivo)
+<<<<<<< codex/evoluir-projeto-astro-com-melhorias-seo-avrxfg
+series: "Nome da série" # opcional
+=======
+>>>>>>> main
 ---
 
 ## Introdução

@@ -10,6 +10,10 @@ interface Props {
   coverImage?: string;
   canonical?: string;
   readingTime: string;
+<<<<<<< codex/evoluir-projeto-astro-com-melhorias-seo-avrxfg
+  series?: string;
+=======
+>>>>>>> main
   author: {
     name: string;
     avatar: string;
@@ -25,6 +29,10 @@ const {
   coverImage = '/images/og-default.png',
   canonical,
   readingTime,
+<<<<<<< codex/evoluir-projeto-astro-com-melhorias-seo-avrxfg
+  series,
+=======
+>>>>>>> main
   author
 } = Astro.props;
 
@@ -54,6 +62,7 @@ const fallbackCover =
         <span class="back-icon" aria-hidden="true">←</span>
         <span>Voltar para a página inicial</span>
       </a>
+      {series && <p class="series">Parte da série: {series}</p>}
       <h1>{title}</h1>
       <p class="meta">Por {author.name} • {formatDateBR(date)} • {readingTime}</p>
     </header>
@@ -85,6 +94,16 @@ const fallbackCover =
     margin: 0 auto;
     display: grid;
     gap: clamp(1.4rem, 1.1rem + 1vw, 2rem);
+  }
+
+
+  .series {
+    margin: 0 0 0.55rem;
+    font-family: var(--ui-font);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    color: var(--text-soft);
   }
 
   .post-header h1 {

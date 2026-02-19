@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import EditorialPostsGrid from '../../components/EditorialPostsGrid.astro';
+import { slugifyTerm } from '../../utils/postHelpers';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  const categories = [...new Set(posts.map((post) => post.data.category).filter(Boolean))];
+
+  return categories.map((categoria) => ({
+    params: { categoria: slugifyTerm(categoria) },
+    props: {
+      categoria,
+      posts: posts
+        .filter((post) => post.data.category === categoria)
+        .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+    }
+  }));
+}
+
+const { categoria, posts } = Astro.props;
+
+const fallbackCover =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(`
+<svg xmlns='http://www.w3.org/2000/svg' width='960' height='560' viewBox='0 0 960 560'>
+  <rect width='960' height='560' fill='#E9E2D8'/>
+  <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle'
+        fill='#6F6355' font-size='34' font-family='Arial, sans-serif'>
+    Capa indisponível
+  </text>
+</svg>
+`);
+---
+
+<BaseLayout
+  title={`${categoria} | Categorias | Perspectiva Cristã`}
+  description={`Artigos sobre ${categoria} no Perspectiva Cristã.`}
+  canonical={`https://seudominio.com/categorias/${slugifyTerm(categoria)}/`}
+>
+  <section class="taxonomy-page" aria-label={`Artigos da categoria ${categoria}`}>
+    <h1>{categoria}</h1>
+    <p class="intro">Artigos sobre {categoria} no Perspectiva Cristã.</p>
+    <EditorialPostsGrid posts={posts} fallbackCover={fallbackCover} />
+  </section>
+</BaseLayout>
+
+<style>
+  .taxonomy-page {
+    width: 100%;
+    display: grid;
+    gap: 1.2rem;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(2.1rem, 1.35rem + 2.2vw, 3.1rem);
+    line-height: 1.15;
+    letter-spacing: -0.012em;
+    color: var(--text);
+  }
+
+  .intro {
+    margin: 0;
+    font-family: var(--ui-font);
+    font-size: clamp(1rem, 0.92rem + 0.3vw, 1.1rem);
+    line-height: 1.6;
+    color: var(--text-soft);
+    max-width: 65ch;
+  }
+</style>
