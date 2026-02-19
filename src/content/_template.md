@@ -10,6 +10,9 @@ tags:
 cover: "/images/post-cover.jpg"
 slug: "slug-do-artigo" # opcional (se omitido, usa o nome do arquivo)
 series: "Nome da série" # opcional
+series: "Nome da série" # opcional
+series: "Nome da série" # opcional
+
 ---
 
 ## Introdução

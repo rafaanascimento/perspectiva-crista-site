@@ -35,5 +35,68 @@ const canonical = `https://seudominio.com/posts/${slug}/`;
   series={post.data.series}
   author={author}
 >
-  <Content />
-</PostLayout>
+  <article class="post">
+    <header class="post-header">
+      <h1>{title}</h1>
+
+      <p class="meta">
+        {formatDateBR(date)} • {author.name} • {readingTime}
+      </p>
+
+      {cover && (
+        <img
+          src={coverPath}
+          alt={`Capa do artigo ${title}`}
+          width="960"
+          height="560"
+          loading="eager"
+        />
+      )}
+    </header>
+
+    <div class="content">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .post {
+    max-width: 820px;
+    margin: 0 auto;
+  }
+
+  .post-header {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(2rem, 1.3rem + 2vw, 2.8rem);
+    line-height: 1.15;
+  }
+
+  .meta {
+    font-size: 0.95rem;
+    color: var(--text-soft);
+  }
+
+  .post img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 0.75rem;
+  }
+
+  .content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+  }
+
+  .content p {
+    margin: 1.4rem 0;
+  }
+</style>
