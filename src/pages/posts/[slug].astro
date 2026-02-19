@@ -14,17 +14,18 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
-const author = authors.find((item) => item.id === post.data.authorId);
+const author = authors.find((item) => item.id === post.data.author);
 
 if (!author) {
-  throw new Error(`Author ${post.data.authorId} not found.`);
+  throw new Error(`Author ${post.data.author} not found.`);
 }
 ---
 
 <PostLayout
   title={post.data.title}
+  description={post.data.description}
   date={post.data.date}
-  coverImage={post.data.coverImage}
+  coverImage={post.data.cover}
   author={author}
 >
   <Content />
