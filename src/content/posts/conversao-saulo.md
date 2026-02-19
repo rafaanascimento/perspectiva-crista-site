@@ -1,8 +1,14 @@
 ---
 title: "A Conversão de Saulo"
+description: "A transformação de Saulo no caminho de Damasco revela como a graça de Cristo redireciona vidas e propósitos."
 date: "2025-01-10"
-authorId: "rafael"
-coverImage: "/images/post-cover.jpg"
+author: "rafael"
+category: "Vida Cristã"
+tags:
+  - "Conversão"
+  - "Graça"
+  - "Discipulado"
+cover: "/images/post-cover.jpg"
 ---
 
 ## Um encontro que muda destinos
