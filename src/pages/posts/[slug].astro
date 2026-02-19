@@ -1,35 +1,31 @@
 ---
-<<<<<<< codex/evoluir-projeto-astro-com-melhorias-seo-htaytj
+
 import { getCollection, render } from 'astro:content';
 import PostLayout from '../../layouts/PostLayout.astro';
 import { getReadingTimeLabel } from '../../utils/readingTime';
 import { getAuthorProfile, getCoverPath, getPostSlug } from '../../utils/postHelpers';
-=======
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { formatDateBR } from '../../utils/formatDateBR';
 import { getReadingTimeLabel } from '../../utils/readingTime';
 import authors from '../../data/authors.json';
->>>>>>> main
+
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
 
   return posts.map((post) => ({
-<<<<<<< codex/evoluir-projeto-astro-com-melhorias-seo-htaytj
     params: { slug: getPostSlug(post) },
     props: { post }
-=======
     params: {
       slug: post.data.slug ?? post.id.replace('.md', ''),
     },
     props: { post },
->>>>>>> main
+
   }));
 }
 
 const { post } = Astro.props;
-<<<<<<< codex/evoluir-projeto-astro-com-melhorias-seo-htaytj
 const { Content } = await render(post);
 const author = getAuthorProfile(post.data.author);
 const readingTime = getReadingTimeLabel(post.body);
@@ -44,7 +40,7 @@ const readingTime = getReadingTimeLabel(post.body);
   readingTime={readingTime}
   series={post.data.series}
   author={author}
-=======
+
 
 const {
   title,
@@ -71,7 +67,7 @@ const readingTime = getReadingTimeLabel(post.body);
   description={description}
   image={coverPath}
   type="article"
->>>>>>> main
+
 >
   <article class="post">
     <header class="post-header">
