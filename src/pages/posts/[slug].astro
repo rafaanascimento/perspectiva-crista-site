@@ -81,6 +81,7 @@ const canonical = `https://seudominio.com/posts/${slug}/`;
   .meta {
     font-size: 0.95rem;
     color: var(--text-soft);
+    font-family: var(--ui-font);
   }
 
   .post img {
@@ -99,4 +100,12 @@ const canonical = `https://seudominio.com/posts/${slug}/`;
   .content p {
     margin: 1.4rem 0;
   }
+
+  @media (min-width: 1024px) {
+    .post {
+      margin-left: 0;
+      max-width: 900px;
+    }
+  }
 </style>
+
