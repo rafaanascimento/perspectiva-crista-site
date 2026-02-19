@@ -8,6 +8,8 @@ tags:
   - "tag-1"
   - "tag-2"
 cover: "/images/post-cover.jpg"
+slug: "slug-do-artigo" # opcional (se omitido, usa o nome do arquivo)
+series: "Nome da série" # opcional
 ---
 
 ## Introdução
