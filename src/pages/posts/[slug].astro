@@ -23,11 +23,11 @@ const {
   description,
   date,
   cover,
-  author: authorId,
+  author: postAuthorId,
 } = post.data;
 
 const authorData =
-  authors.find((a) => a.id === authorId) ?? null;
+  authors.find((a) => a.id === postAuthorId) ?? null;
 
 const coverPath = cover?.startsWith('/')
   ? cover
@@ -117,4 +117,3 @@ const readingTime = getReadingTimeLabel(post.body);
     }
   }
 </style>
-
