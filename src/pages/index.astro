@@ -41,8 +41,7 @@ const fallbackCover =
           <a class="featured-card" href={`/posts/${featuredPost.id}/`}>
             <img
               src={getCoverPath(
-                (featuredPost.data as { cover?: string; coverImage?: string }).cover ??
-                  featuredPost.data.coverImage
+                featuredPost.data.cover
               )}
               alt={`Capa do artigo ${featuredPost.data.title}`}
               width="1200"
@@ -54,7 +53,7 @@ const fallbackCover =
               <h3>{featuredPost.data.title}</h3>
               <p class="meta">
                 {formatDateBR(featuredPost.data.date)} •{' '}
-                {getAuthorName(featuredPost.data.authorId)}
+                {getAuthorName(featuredPost.data.author)}
               </p>
             </div>
           </a>
@@ -69,8 +68,7 @@ const fallbackCover =
           {
             recentPosts.map((post) => {
               const cover = getCoverPath(
-                (post.data as { cover?: string; coverImage?: string }).cover ??
-                  post.data.coverImage
+                post.data.cover
               );
 
               return (
@@ -85,8 +83,9 @@ const fallbackCover =
                   />
                   <div class="card-body">
                     <h3>{post.data.title}</h3>
+                    <p class="description">{post.data.description}</p>
                     <p class="meta">
-                      {formatDateBR(post.data.date)} • {getAuthorName(post.data.authorId)}
+                      {formatDateBR(post.data.date)} • {post.data.category}
                     </p>
                   </div>
                 </a>
@@ -200,11 +199,22 @@ const fallbackCover =
     display: grid;
     grid-template-columns: 1fr;
     gap: 1.4rem;
+    align-items: stretch;
+  }
+
+  .card {
+    height: 100%;
   }
 
   .card img {
     aspect-ratio: 16 / 9;
     border-bottom: 1px solid var(--line);
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
   }
 
   .card h3 {
@@ -213,6 +223,19 @@ const fallbackCover =
     line-height: 1.35;
     color: var(--text);
     font-family: var(--heading-font);
+  }
+
+  .description {
+    margin: 0.6rem 0 0;
+    font-family: var(--ui-font);
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--text-soft);
+    flex-grow: 1;
+  }
+
+  .card .meta {
+    margin-top: auto;
   }
 
   .newsletter-inner {
@@ -283,9 +306,16 @@ const fallbackCover =
     color: #1c130d;
   }
 
-  @media (min-width: 1024px) {
+  @media (min-width: 768px) {
     .recent-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .recent-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 1.6rem;
     }
   }
