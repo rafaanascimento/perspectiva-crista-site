@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
-import PostLayout from '../../layouts/PostLayout.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { formatDateBR } from '../../utils/formatDateBR';
 import { getReadingTimeLabel } from '../../utils/readingTime';
 import { getAuthorProfile, getCoverPath, getPostSlug } from '../../utils/postHelpers';
 
@@ -15,25 +16,28 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
-const author = getAuthorProfile(post.data.author);
+
+const {
+  title,
+  description,
+  date,
+  cover,
+  author: authorId
+} = post.data;
+
+const author = getAuthorProfile(authorId);
+const coverPath = getCoverPath(cover);
 const readingTime = getReadingTimeLabel(post.body);
 const slug = getPostSlug(post);
-const description = post.data.description;
-const image = getCoverPath(post.data.cover);
 const canonical = `https://seudominio.com/posts/${slug}/`;
 ---
 
-<PostLayout
-  title={post.data.title}
+<BaseLayout
+  title={`${title} | Perspectiva Cristã`}
   description={description}
-  date={post.data.date}
-  coverImage={image}
-  image={image}
-  canonical={canonical}
+  image={coverPath}
   type="article"
-  readingTime={readingTime}
-  series={post.data.series}
-  author={author}
+  canonical={canonical}
 >
   <article class="post">
     <header class="post-header">
@@ -108,4 +112,3 @@ const canonical = `https://seudominio.com/posts/${slug}/`;
     }
   }
 </style>
-
