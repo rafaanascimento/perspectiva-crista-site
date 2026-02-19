@@ -5,5 +5,12 @@
     "avatar": "/authors/rafael.jpg",
     "role": "Autor",
     "bio": "Cristão, escritor e entusiasta de tecnologia."
+  },
+  {
+    "id": "josue-coutinho",
+    "name": "Josué Coutinho",
+    "avatar": "/authors/josue-coutinho.jpg",
+    "role": "Presbítero e Estudante de Teologia",
+    "bio": "Presbítero e estudante de Teologia, dedicado ao ensino bíblico e à edificação espiritual."
   }
 ]
