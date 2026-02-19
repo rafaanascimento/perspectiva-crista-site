@@ -1,9 +1,9 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { formatDateBR } from '../../utils/formatDateBR';
 import { getReadingTimeLabel } from '../../utils/readingTime';
 import { getAuthorProfile, getCoverPath, getPostSlug } from '../../utils/postHelpers';
-import { formatDateBR } from '../../utils/formatDateBR';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
@@ -22,12 +22,14 @@ const {
   description,
   date,
   cover,
-  author: authorId,
+  author: authorId
 } = post.data;
 
 const author = getAuthorProfile(authorId);
 const coverPath = getCoverPath(cover);
 const readingTime = getReadingTimeLabel(post.body);
+const slug = getPostSlug(post);
+const canonical = `https://seudominio.com/posts/${slug}/`;
 ---
 
 <BaseLayout
@@ -35,6 +37,7 @@ const readingTime = getReadingTimeLabel(post.body);
   description={description}
   image={coverPath}
   type="article"
+  canonical={canonical}
 >
   <article class="post">
     <header class="post-header">
@@ -82,6 +85,7 @@ const readingTime = getReadingTimeLabel(post.body);
   .meta {
     font-size: 0.95rem;
     color: var(--text-soft);
+    font-family: var(--ui-font);
   }
 
   .post img {
@@ -100,4 +104,12 @@ const readingTime = getReadingTimeLabel(post.body);
   .content p {
     margin: 1.4rem 0;
   }
+
+  @media (min-width: 1024px) {
+    .post {
+      margin-left: 0;
+      max-width: 900px;
+    }
+  }
 </style>
+
