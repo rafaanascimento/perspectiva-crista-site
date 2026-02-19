@@ -3,13 +3,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { formatDateBR } from '../utils/formatDateBR';
 import authors from '../data/authors.json';
+import PostCard from '../components/PostCard.astro';
 
 const posts = (await getCollection('posts')).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime()
 );
-
-const featuredPost = posts[0];
-const recentPosts = posts.slice(1);
 
 const getAuthorName = (authorId: string) =>
   authors.find((author) => author.id === authorId)?.name ?? 'Autor';
@@ -18,6 +16,11 @@ const getCoverPath = (cover: string | undefined) => {
   if (!cover) return '/images/post-cover.jpg';
   return cover.startsWith('/') ? cover : `/${cover}`;
 };
+
+const latestPostId = posts[0]?.id;
+
+const getCardTitle = (postId: string, title: string) =>
+  postId === latestPostId ? 'Quando Jesus Passa...' : title;
 
 const fallbackCover =
   "data:image/svg+xml;utf8," +
@@ -34,68 +37,28 @@ const fallbackCover =
 
 <BaseLayout title="Perspectiva Cristã">
   <section class="home-feed" aria-label="Conteúdo da página inicial">
-    {
-      featuredPost && (
-        <section class="featured" aria-label="Artigo em destaque">
-          <h2>Artigo em destaque</h2>
-          <a class="featured-card" href={`/posts/${featuredPost.id}/`}>
-            <img
-              src={getCoverPath(
-                (featuredPost.data as { cover?: string; coverImage?: string }).cover ??
-                  featuredPost.data.coverImage
-              )}
-              alt={`Capa do artigo ${featuredPost.data.title}`}
-              width="1200"
-              height="675"
-              loading="lazy"
-              onerror={`this.onerror=null;this.src='${fallbackCover}';`}
-            />
-            <div class="featured-body">
-              <h3>{featuredPost.data.title}</h3>
-              <p class="meta">
-                {formatDateBR(featuredPost.data.date)} •{' '}
-                {getAuthorName(featuredPost.data.authorId)}
-              </p>
-            </div>
-          </a>
-        </section>
-      )
-    }
+    <section class="recent" aria-label="Artigos">
+      <h2>Artigos</h2>
+      <div class="recent-grid">
+        {
+          posts.map((post) => {
+            const cover = getCoverPath(post.data.cover);
 
-    {recentPosts.length > 0 && (
-      <section class="recent" aria-label="Artigos recentes">
-        <h2>Artigos recentes</h2>
-        <div class="recent-grid">
-          {
-            recentPosts.map((post) => {
-              const cover = getCoverPath(
-                (post.data as { cover?: string; coverImage?: string }).cover ??
-                  post.data.coverImage
-              );
-
-              return (
-                <a class="card" href={`/posts/${post.id}/`}>
-                  <img
-                    src={cover}
-                    alt={`Capa do artigo ${post.data.title}`}
-                    width="960"
-                    height="560"
-                    loading="lazy"
-                    onerror={`this.onerror=null;this.src='${fallbackCover}';`}
-                  />
-                  <div class="card-body">
-                    <h3>{post.data.title}</h3>
-                    <p class="meta">
-                      {formatDateBR(post.data.date)} • {getAuthorName(post.data.authorId)}
-                    </p>
-                  </div>
-                </a>
-              );
-            })
-          }
-        </div>
-      </section>
-    )}
+            return (
+              <PostCard
+                url={`/posts/${post.id}/`}
+                cover={cover}
+                title={post.data.title}
+                displayTitle={getCardTitle(post.id, post.data.title)}
+                formattedDate={formatDateBR(post.data.date)}
+                author={getAuthorName(post.data.author)}
+                fallbackCover={fallbackCover}
+              />
+            );
+          })
+        }
+      </div>
+    </section>
 
     <section class="newsletter" aria-label="Assinatura de novidades">
       <div class="newsletter-inner">
@@ -128,7 +91,6 @@ const fallbackCover =
     gap: clamp(2rem, 4vw, 3rem);
   }
 
-  .featured h2,
   .recent h2,
   .newsletter h2 {
     margin: 0 0 1rem;
@@ -139,85 +101,20 @@ const fallbackCover =
     color: var(--text-soft);
   }
 
-  .featured-card,
-  .card {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    border-radius: 1rem;
-    border: 1px solid var(--line);
-    background: var(--surface);
-    box-shadow: var(--shadow-sm);
-    text-decoration: none;
-    transition: transform 0.2s ease, box-shadow 0.2s ease,
-      border-color 0.2s ease, background-color 0.2s ease;
-  }
-
-  .featured-card:hover,
-  .featured-card:focus-visible,
-  .card:hover,
-  .card:focus-visible {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
-    border-color: color-mix(in srgb, var(--line) 68%, var(--accent) 32%);
-  }
-
-  .featured-card img,
-  .card img {
-    width: 100%;
-    display: block;
-    object-fit: cover;
-    background: var(--surface-soft);
-  }
-
-  .featured-card img {
-    aspect-ratio: 16 / 8;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .featured-body,
-  .card-body {
-    padding: clamp(1rem, 1.5vw, 1.4rem);
-  }
-
-  .featured-body h3 {
-    margin: 0;
-    font-family: var(--heading-font);
-    font-size: clamp(1.5rem, 1.1rem + 1.8vw, 2.2rem);
-    line-height: 1.2;
-    color: var(--text);
-  }
-
-  .meta {
-    margin: 0.62rem 0 0;
-    font-family: var(--ui-font);
-    font-size: clamp(0.86rem, 0.82rem + 0.2vw, 0.94rem);
-    line-height: 1.55;
-    color: var(--text-soft);
-  }
 
   .recent-grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 1.4rem;
+    align-items: stretch;
   }
 
-  .card img {
-    aspect-ratio: 16 / 9;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .card h3 {
-    margin: 0;
-    font-size: clamp(1.15rem, 1rem + 0.7vw, 1.48rem);
-    line-height: 1.35;
-    color: var(--text);
-    font-family: var(--heading-font);
-  }
 
   .newsletter-inner {
     width: 100%;
     max-width: 860px;
+    box-sizing: border-box;
+    overflow-x: hidden;
     padding: clamp(1.2rem, 1.8vw, 1.7rem);
     border: 1px solid var(--line);
     border-radius: 1rem;
@@ -229,12 +126,16 @@ const fallbackCover =
     display: grid;
     grid-template-columns: 1fr;
     gap: 1rem;
-    width: min(100%, 560px);
+    width: 100%;
+    max-width: 100%;
   }
 
   .newsletter-form label {
     display: grid;
     gap: 0.45rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
     font-family: var(--ui-font);
     font-size: 0.87rem;
     color: var(--text-soft);
@@ -242,6 +143,8 @@ const fallbackCover =
 
   .newsletter-form input {
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
     border: 1px solid var(--line);
     border-radius: 0.6rem;
     background: var(--surface-soft);
@@ -272,20 +175,28 @@ const fallbackCover =
 
   .note {
     margin: 0.82rem 0 0;
+    width: 100%;
+    max-width: 100%;
     font-family: var(--ui-font);
     font-size: 0.82rem;
-    line-height: 1.5;
+    line-height: 1.6;
     color: var(--text-soft);
-    max-width: 76ch;
   }
 
   .dark .newsletter-form button {
     color: #1c130d;
   }
 
-  @media (min-width: 1024px) {
+  @media (min-width: 768px) {
     .recent-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .recent-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 1.6rem;
     }
   }
