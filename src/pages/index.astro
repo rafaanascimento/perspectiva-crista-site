@@ -45,15 +45,25 @@ const fallbackCover =
             const cover = getCoverPath(post.data.cover);
 
             return (
-              <PostCard
-                url={`/posts/${post.id}/`}
-                cover={cover}
-                title={post.data.title}
-                displayTitle={getCardTitle(post.id, post.data.title)}
-                formattedDate={formatDateBR(post.data.date)}
-                author={getAuthorName(post.data.author)}
-                fallbackCover={fallbackCover}
-              />
+              <a class="card" href={`/posts/${post.id}/`}>
+                <img
+                  src={cover}
+                  alt={`Capa do artigo ${post.data.title}`}
+                  width="960"
+                  height="560"
+                  loading="lazy"
+                  onerror={`this.onerror=null;this.src='${fallbackCover}';`}
+                />
+                <div class="card-body">
+codex/improve-structure-and-seo-for-astro-project-kffbrd
+                  <h3>{getCardTitle(post.id, post.data.title)}</h3>
+                  <h3>{post.data.title}</h3>
+main
+                  <p class="meta">
+                    {formatDateBR(post.data.date)} • {getAuthorName(post.data.author)}
+                  </p>
+                </div>
+              </a>
             );
           })
         }
