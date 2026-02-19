@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { formatDateBR } from '../utils/formatDateBR';
 import authors from '../data/authors.json';
+import PostCard from '../components/PostCard.astro';
 
 const posts = (await getCollection('posts')).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime()
@@ -44,26 +45,15 @@ const fallbackCover =
             const cover = getCoverPath(post.data.cover);
 
             return (
-              <a class="card" href={`/posts/${post.id}/`}>
-                <img
-                  src={cover}
-                  alt={`Capa do artigo ${post.data.title}`}
-                  width="960"
-                  height="560"
-                  loading="lazy"
-                  onerror={`this.onerror=null;this.src='${fallbackCover}';`}
-                />
-                <div class="card-body">
- codex/improve-structure-and-seo-for-astro-project-kffbrd
-                  <h3>{getCardTitle(post.id, post.data.title)}</h3>
-
-                  <h3>{post.data.title}</h3>
- main
-                  <p class="meta">
-                    {formatDateBR(post.data.date)} • {getAuthorName(post.data.author)}
-                  </p>
-                </div>
-              </a>
+              <PostCard
+                url={`/posts/${post.id}/`}
+                cover={cover}
+                title={post.data.title}
+                displayTitle={getCardTitle(post.id, post.data.title)}
+                formattedDate={formatDateBR(post.data.date)}
+                author={getAuthorName(post.data.author)}
+                fallbackCover={fallbackCover}
+              />
             );
           })
         }
@@ -111,34 +101,6 @@ const fallbackCover =
     color: var(--text-soft);
   }
 
-  .card {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    overflow: hidden;
-    border-radius: 1rem;
-    border: 1px solid var(--line);
-    background: var(--surface);
-    box-shadow: var(--shadow-sm);
-    text-decoration: none;
-    transition: transform 0.2s ease, box-shadow 0.2s ease,
-      border-color 0.2s ease, background-color 0.2s ease;
-  }
-
-  .card:hover,
-  .card:focus-visible {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
-    border-color: color-mix(in srgb, var(--line) 68%, var(--accent) 32%);
-  }
-
-  .meta {
-    margin: 0.62rem 0 0;
-    font-family: var(--ui-font);
-    font-size: clamp(0.86rem, 0.82rem + 0.2vw, 0.94rem);
-    line-height: 1.55;
-    color: var(--text-soft);
-  }
 
   .recent-grid {
     display: grid;
@@ -147,35 +109,6 @@ const fallbackCover =
     align-items: stretch;
   }
 
-  .card {
-    height: 100%;
-    min-height: 21.5rem;
-  }
-
-  .card img {
-    width: 100%;
-    display: block;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
-    background: var(--surface-soft);
-    border-bottom: 1px solid var(--line);
-  }
-
-  .card-body {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    justify-content: space-between;
-    padding: clamp(1rem, 1.5vw, 1.4rem);
-  }
-
-  .card h3 {
-    margin: 0;
-    font-size: clamp(1.15rem, 1rem + 0.7vw, 1.48rem);
-    line-height: 1.35;
-    color: var(--text);
-    font-family: var(--heading-font);
-  }
 
   .card .meta {
     margin-top: auto;
