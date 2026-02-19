@@ -8,9 +8,6 @@ const posts = (await getCollection('posts')).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime()
 );
 
-const featuredPost = posts[0];
-const recentPosts = posts.slice(1);
-
 const getAuthorName = (authorId: string) =>
   authors.find((author) => author.id === authorId)?.name ?? 'Autor';
 
@@ -34,67 +31,35 @@ const fallbackCover =
 
 <BaseLayout title="Perspectiva Cristã">
   <section class="home-feed" aria-label="Conteúdo da página inicial">
-    {
-      featuredPost && (
-        <section class="featured" aria-label="Artigo em destaque">
-          <h2>Artigo em destaque</h2>
-          <a class="featured-card" href={`/posts/${featuredPost.id}/`}>
-            <img
-              src={getCoverPath(
-                featuredPost.data.cover
-              )}
-              alt={`Capa do artigo ${featuredPost.data.title}`}
-              width="1200"
-              height="675"
-              loading="lazy"
-              onerror={`this.onerror=null;this.src='${fallbackCover}';`}
-            />
-            <div class="featured-body">
-              <h3>{featuredPost.data.title}</h3>
-              <p class="meta">
-                {formatDateBR(featuredPost.data.date)} •{' '}
-                {getAuthorName(featuredPost.data.author)}
-              </p>
-            </div>
-          </a>
-        </section>
-      )
-    }
+    <section class="recent" aria-label="Artigos">
+      <h2>Artigos</h2>
+      <div class="recent-grid">
+        {
+          posts.map((post) => {
+            const cover = getCoverPath(post.data.cover);
 
-    {recentPosts.length > 0 && (
-      <section class="recent" aria-label="Artigos recentes">
-        <h2>Artigos recentes</h2>
-        <div class="recent-grid">
-          {
-            recentPosts.map((post) => {
-              const cover = getCoverPath(
-                post.data.cover
-              );
-
-              return (
-                <a class="card" href={`/posts/${post.id}/`}>
-                  <img
-                    src={cover}
-                    alt={`Capa do artigo ${post.data.title}`}
-                    width="960"
-                    height="560"
-                    loading="lazy"
-                    onerror={`this.onerror=null;this.src='${fallbackCover}';`}
-                  />
-                  <div class="card-body">
-                    <h3>{post.data.title}</h3>
-                    <p class="description">{post.data.description}</p>
-                    <p class="meta">
-                      {formatDateBR(post.data.date)} • {getAuthorName(post.data.author)}
-                    </p>
-                  </div>
-                </a>
-              );
-            })
-          }
-        </div>
-      </section>
-    )}
+            return (
+              <a class="card" href={`/posts/${post.id}/`}>
+                <img
+                  src={cover}
+                  alt={`Capa do artigo ${post.data.title}`}
+                  width="960"
+                  height="560"
+                  loading="lazy"
+                  onerror={`this.onerror=null;this.src='${fallbackCover}';`}
+                />
+                <div class="card-body">
+                  <h3>{post.data.title}</h3>
+                  <p class="meta">
+                    {formatDateBR(post.data.date)} • {getAuthorName(post.data.author)}
+                  </p>
+                </div>
+              </a>
+            );
+          })
+        }
+      </div>
+    </section>
 
     <section class="newsletter" aria-label="Assinatura de novidades">
       <div class="newsletter-inner">
@@ -127,7 +92,6 @@ const fallbackCover =
     gap: clamp(2rem, 4vw, 3rem);
   }
 
-  .featured h2,
   .recent h2,
   .newsletter h2 {
     margin: 0 0 1rem;
@@ -138,10 +102,10 @@ const fallbackCover =
     color: var(--text-soft);
   }
 
-  .featured-card,
   .card {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     overflow: hidden;
     border-radius: 1rem;
     border: 1px solid var(--line);
@@ -152,39 +116,11 @@ const fallbackCover =
       border-color 0.2s ease, background-color 0.2s ease;
   }
 
-  .featured-card:hover,
-  .featured-card:focus-visible,
   .card:hover,
   .card:focus-visible {
     transform: translateY(-4px);
     box-shadow: var(--shadow-lg);
     border-color: color-mix(in srgb, var(--line) 68%, var(--accent) 32%);
-  }
-
-  .featured-card img,
-  .card img {
-    width: 100%;
-    display: block;
-    object-fit: cover;
-    background: var(--surface-soft);
-  }
-
-  .featured-card img {
-    aspect-ratio: 16 / 8;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .featured-body,
-  .card-body {
-    padding: clamp(1rem, 1.5vw, 1.4rem);
-  }
-
-  .featured-body h3 {
-    margin: 0;
-    font-family: var(--heading-font);
-    font-size: clamp(1.5rem, 1.1rem + 1.8vw, 2.2rem);
-    line-height: 1.2;
-    color: var(--text);
   }
 
   .meta {
@@ -204,12 +140,15 @@ const fallbackCover =
 
   .card {
     height: 100%;
-    min-height: 24rem;
+    min-height: 21.5rem;
   }
 
   .card img {
+    width: 100%;
+    display: block;
     aspect-ratio: 16 / 9;
     object-fit: cover;
+    background: var(--surface-soft);
     border-bottom: 1px solid var(--line);
   }
 
@@ -217,6 +156,8 @@ const fallbackCover =
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+    justify-content: space-between;
+    padding: clamp(1rem, 1.5vw, 1.4rem);
   }
 
   .card h3 {
