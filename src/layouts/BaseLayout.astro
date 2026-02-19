@@ -4,9 +4,16 @@ interface Props {
   description?: string;
   image?: string;
   canonical?: string;
+  type?: string;
 }
 
-const { title, description = 'Reflexões bíblicas, fé e propósito para o dia a dia.', image = '/images/post-cover.jpg', canonical } = Astro.props;
+const {
+  title,
+  description = 'Reflexões bíblicas, fé e propósito para o dia a dia.',
+  image = '/images/og-default.png',
+  canonical,
+  type = 'website'
+} = Astro.props;
 
 const canonicalUrl = canonical ?? Astro.url.href;
 const imageUrl = new URL(image, Astro.url).href;
@@ -21,7 +28,7 @@ const imageUrl = new URL(image, Astro.url).href;
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
 
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={type} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />

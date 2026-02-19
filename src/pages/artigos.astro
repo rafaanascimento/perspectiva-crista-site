@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { formatDateBR } from '../utils/formatDateBR';
+import { getReadingTimeLabel } from '../utils/readingTime';
 import authors from '../data/authors.json';
 
 const posts = (await getCollection('posts')).sort(
@@ -32,6 +33,7 @@ const fallbackCover =
 <BaseLayout
   title="Artigos | Perspectiva Cristã"
   description="Explore os artigos do Perspectiva Cristã sobre fé, discipulado e vida cristã."
+  canonical="https://seudominio.com/artigos/"
 >
   <section class="articles-page" aria-label="Todos os artigos">
     <h1>Artigos</h1>
@@ -41,7 +43,7 @@ const fallbackCover =
       {
         posts.map((post) => (
           <li>
-            <a href={`/posts/${post.id}/`} class="article-card">
+            <a href={`/posts/${post.data.slug ?? post.id}/`} class="article-card">
               <img
                 src={getCoverPath(post.data.cover)}
                 alt={`Capa do artigo ${post.data.title}`}
@@ -55,7 +57,7 @@ const fallbackCover =
                 <h2 class="title">{post.data.title}</h2>
                 <p class="description">{post.data.description}</p>
                 <p class="meta">
-                  {formatDateBR(post.data.date)} • {getAuthorName(post.data.author)}
+                  {formatDateBR(post.data.date)} • {getAuthorName(post.data.author)} • {getReadingTimeLabel(post.body)}
                 </p>
               </div>
             </a>
