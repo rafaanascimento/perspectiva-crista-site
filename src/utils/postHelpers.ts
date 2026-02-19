@@ -1,12 +1,12 @@
 import authors from '../data/authors.json';
 
 const FALLBACK_AUTHOR = {
+  id: 'fallback',
   name: 'Autor',
   avatar: '/images/og-default.png',
   role: 'Equipe Perspectiva Cristã',
   bio: 'Conteúdo editorial do Perspectiva Cristã.'
 };
-
 
 export const slugifyTerm = (value: string) =>
   value
@@ -23,10 +23,6 @@ export const getPostSlug = (post: { id: string; data: { slug?: string } }) => {
   return slugifyTerm(baseSlug) || 'post';
 };
 
-export const getPostSlug = (post: { id: string; data: { slug?: string } }) =>
-  post.data.slug?.trim() || post.id;
-
-
 export const getCoverPath = (cover?: string) => {
   if (!cover?.trim()) return '/images/og-default.png';
   return cover.startsWith('/') ? cover : `/${cover}`;
@@ -37,9 +33,4 @@ export const getAuthorName = (authorId?: string) =>
 
 export const getAuthorProfile = (authorId?: string) =>
   authors.find((author) => author.id === authorId) ?? FALLBACK_AUTHOR;
-
-
-
-export const slugifyTerm = (value: string) =>
-  value.toLowerCase().trim().replaceAll(/\s+/g, '-');
 
