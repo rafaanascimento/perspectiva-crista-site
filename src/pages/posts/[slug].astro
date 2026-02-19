@@ -2,31 +2,54 @@
 import { getCollection, render } from 'astro:content';
 import PostLayout from '../../layouts/PostLayout.astro';
 import { getReadingTimeLabel } from '../../utils/readingTime';
+<<<<<<< codex/evoluir-projeto-astro-com-melhorias-seo-avrxfg
 import { getAuthorProfile, getCoverPath, getPostSlug } from '../../utils/postHelpers';
+=======
+import authors from '../../data/authors.json';
+>>>>>>> main
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
 
   return posts.map((post) => ({
+<<<<<<< codex/evoluir-projeto-astro-com-melhorias-seo-avrxfg
     params: { slug: getPostSlug(post) },
+=======
+    params: { slug: post.data.slug ?? post.id },
+>>>>>>> main
     props: { post }
   }));
 }
 
 const { post } = Astro.props;
 const { Content } = await render(post);
+<<<<<<< codex/evoluir-projeto-astro-com-melhorias-seo-avrxfg
 const author = getAuthorProfile(post.data.author);
 const readingTime = getReadingTimeLabel(post.body);
+=======
+const author = authors.find((item) => item.id === post.data.author);
+const readingTime = getReadingTimeLabel(post.body);
+
+if (!author) {
+  throw new Error(`Author ${post.data.author} not found.`);
+}
+>>>>>>> main
 ---
 
 <PostLayout
   title={post.data.title}
   description={post.data.description}
   date={post.data.date}
+<<<<<<< codex/evoluir-projeto-astro-com-melhorias-seo-avrxfg
   coverImage={getCoverPath(post.data.cover)}
   canonical={`https://seudominio.com/posts/${getPostSlug(post)}/`}
   readingTime={readingTime}
   series={post.data.series}
+=======
+  coverImage={post.data.cover}
+  canonical={`https://seudominio.com/posts/${post.data.slug ?? post.id}/`}
+  readingTime={readingTime}
+>>>>>>> main
   author={author}
 >
   <Content />

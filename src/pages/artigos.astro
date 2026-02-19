@@ -1,7 +1,13 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+<<<<<<< codex/evoluir-projeto-astro-com-melhorias-seo-avrxfg
 import EditorialPostsGrid from '../components/EditorialPostsGrid.astro';
+=======
+import { formatDateBR } from '../utils/formatDateBR';
+import { getReadingTimeLabel } from '../utils/readingTime';
+import authors from '../data/authors.json';
+>>>>>>> main
 
 const posts = (await getCollection('posts')).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime()
@@ -22,6 +28,7 @@ const fallbackCover =
 
 <BaseLayout
   title="Artigos | Perspectiva Cristã"
+<<<<<<< codex/evoluir-projeto-astro-com-melhorias-seo-avrxfg
   description="Estudos, reflexões e análises bíblicas organizadas por categoria."
   canonical="https://seudominio.com/artigos/"
 >
@@ -29,6 +36,41 @@ const fallbackCover =
     <h1>Todos os Artigos</h1>
     <p class="intro">Estudos, reflexões e análises bíblicas organizadas por categoria.</p>
     <EditorialPostsGrid posts={posts} fallbackCover={fallbackCover} />
+=======
+  description="Explore os artigos do Perspectiva Cristã sobre fé, discipulado e vida cristã."
+  canonical="https://seudominio.com/artigos/"
+>
+  <section class="articles-page" aria-label="Todos os artigos">
+    <h1>Artigos</h1>
+    <p class="intro">Todos os artigos publicados em Perspectiva Cristã.</p>
+
+    <ul class="article-list">
+      {
+        posts.map((post) => (
+          <li>
+            <a href={`/posts/${post.data.slug ?? post.id}/`} class="article-card">
+              <img
+                src={getCoverPath(post.data.cover)}
+                alt={`Capa do artigo ${post.data.title}`}
+                width="960"
+                height="560"
+                loading="lazy"
+                onerror={`this.onerror=null;this.src='${fallbackCover}';`}
+              />
+              <div class="card-body">
+                <p class="category">{post.data.category}</p>
+                <h2 class="title">{post.data.title}</h2>
+                <p class="description">{post.data.description}</p>
+                <p class="meta">
+                  {formatDateBR(post.data.date)} • {getAuthorName(post.data.author)} • {getReadingTimeLabel(post.body)}
+                </p>
+              </div>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+>>>>>>> main
   </section>
 </BaseLayout>
 
