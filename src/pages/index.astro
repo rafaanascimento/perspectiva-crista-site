@@ -16,6 +16,11 @@ const getCoverPath = (cover: string | undefined) => {
   return cover.startsWith('/') ? cover : `/${cover}`;
 };
 
+const latestPostId = posts[0]?.id;
+
+const getCardTitle = (postId: string, title: string) =>
+  postId === latestPostId ? 'Quando Jesus Passa...' : title;
+
 const fallbackCover =
   "data:image/svg+xml;utf8," +
   encodeURIComponent(`
@@ -49,7 +54,11 @@ const fallbackCover =
                   onerror={`this.onerror=null;this.src='${fallbackCover}';`}
                 />
                 <div class="card-body">
+<<<<<<< codex/improve-structure-and-seo-for-astro-project-kffbrd
+                  <h3>{getCardTitle(post.id, post.data.title)}</h3>
+=======
                   <h3>{post.data.title}</h3>
+>>>>>>> main
                   <p class="meta">
                     {formatDateBR(post.data.date)} • {getAuthorName(post.data.author)}
                   </p>
@@ -175,6 +184,8 @@ const fallbackCover =
   .newsletter-inner {
     width: 100%;
     max-width: 860px;
+    box-sizing: border-box;
+    overflow-x: hidden;
     padding: clamp(1.2rem, 1.8vw, 1.7rem);
     border: 1px solid var(--line);
     border-radius: 1rem;
@@ -186,12 +197,16 @@ const fallbackCover =
     display: grid;
     grid-template-columns: 1fr;
     gap: 1rem;
-    width: min(100%, 560px);
+    width: 100%;
+    max-width: 100%;
   }
 
   .newsletter-form label {
     display: grid;
     gap: 0.45rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
     font-family: var(--ui-font);
     font-size: 0.87rem;
     color: var(--text-soft);
@@ -199,6 +214,8 @@ const fallbackCover =
 
   .newsletter-form input {
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
     border: 1px solid var(--line);
     border-radius: 0.6rem;
     background: var(--surface-soft);
@@ -229,11 +246,12 @@ const fallbackCover =
 
   .note {
     margin: 0.82rem 0 0;
+    width: 100%;
+    max-width: 100%;
     font-family: var(--ui-font);
     font-size: 0.82rem;
-    line-height: 1.5;
+    line-height: 1.6;
     color: var(--text-soft);
-    max-width: 76ch;
   }
 
   .dark .newsletter-form button {
