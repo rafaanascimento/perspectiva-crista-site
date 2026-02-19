@@ -2,13 +2,15 @@ import { defineCollection, z } from 'astro:content';
 
 const posts = defineCollection({
   schema: z.object({
-    title: z.string(),
-    description: z.string(),
-    date: z.coerce.date(),
-    author: z.string(),
-    category: z.string(),
-    tags: z.array(z.string()),
-    cover: z.string()
+    title: z.string().default('Sem título'),
+    description: z.string().default(''),
+    date: z.coerce.date().default(new Date()),
+    author: z.string().default('autor'),
+    category: z.string().default('Geral'),
+    tags: z.array(z.string()).default([]),
+    cover: z.string().default('/images/og-default.png'),
+    slug: z.string().optional(),
+    series: z.string().optional()
   })
 });
 
