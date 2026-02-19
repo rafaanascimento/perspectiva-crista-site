@@ -1,19 +1,35 @@
 ---
+<<<<<<< codex/evoluir-projeto-astro-com-melhorias-seo-htaytj
 import { getCollection, render } from 'astro:content';
 import PostLayout from '../../layouts/PostLayout.astro';
 import { getReadingTimeLabel } from '../../utils/readingTime';
 import { getAuthorProfile, getCoverPath, getPostSlug } from '../../utils/postHelpers';
+=======
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { formatDateBR } from '../../utils/formatDateBR';
+import { getReadingTimeLabel } from '../../utils/readingTime';
+import authors from '../../data/authors.json';
+>>>>>>> main
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
 
   return posts.map((post) => ({
+<<<<<<< codex/evoluir-projeto-astro-com-melhorias-seo-htaytj
     params: { slug: getPostSlug(post) },
     props: { post }
+=======
+    params: {
+      slug: post.data.slug ?? post.id.replace('.md', ''),
+    },
+    props: { post },
+>>>>>>> main
   }));
 }
 
 const { post } = Astro.props;
+<<<<<<< codex/evoluir-projeto-astro-com-melhorias-seo-htaytj
 const { Content } = await render(post);
 const author = getAuthorProfile(post.data.author);
 const readingTime = getReadingTimeLabel(post.body);
@@ -28,6 +44,105 @@ const readingTime = getReadingTimeLabel(post.body);
   readingTime={readingTime}
   series={post.data.series}
   author={author}
+=======
+
+const {
+  title,
+  description,
+  date,
+  cover,
+  author: postAuthorId,
+} = post.data;
+
+const authorData =
+  authors.find((a) => a.id === postAuthorId) ?? null;
+
+const coverPath = cover?.startsWith('/')
+  ? cover
+  : cover
+  ? `/${cover}`
+  : '/images/post-cover.jpg';
+
+const readingTime = getReadingTimeLabel(post.body);
+---
+
+<BaseLayout
+  title={`${title} | Perspectiva Cristã`}
+  description={description}
+  image={coverPath}
+  type="article"
+>>>>>>> main
 >
-  <Content />
-</PostLayout>
+  <article class="post">
+    <header class="post-header">
+      <h1>{title}</h1>
+
+      <p class="meta">
+        {formatDateBR(date)} • {authorData?.name ?? 'Autor'} • {readingTime}
+      </p>
+
+      {cover && (
+        <img
+          src={coverPath}
+          alt={`Capa do artigo ${title}`}
+          width="960"
+          height="560"
+          loading="eager"
+        />
+      )}
+    </header>
+
+    <div class="content">
+      <slot />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .post {
+    max-width: 820px;
+    margin: 0 auto;
+  }
+
+  .post-header {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(2rem, 1.3rem + 2vw, 2.8rem);
+    line-height: 1.15;
+  }
+
+  .meta {
+    font-size: 0.95rem;
+    color: var(--text-soft);
+    font-family: var(--ui-font);
+  }
+
+  .post img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 0.75rem;
+  }
+
+  .content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+  }
+
+  .content p {
+    margin: 1.4rem 0;
+  }
+
+  @media (min-width: 1024px) {
+    .post {
+      margin-left: 0;
+      max-width: 900px;
+    }
+  }
+</style>
