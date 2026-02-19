@@ -37,33 +37,44 @@ const fallbackCover =
 >
   <section class="articles-page" aria-label="Todos os artigos">
     <h1>Artigos</h1>
-    <p class="intro">Todos os artigos publicados em Perspectiva Cristã.</p>
+    <p class="intro">
+      Todos os artigos publicados em Perspectiva Cristã.
+    </p>
 
     <ul class="article-list">
-      {
-        posts.map((post) => (
-          <li>
-            <a href={`/posts/${post.data.slug ?? post.id}/`} class="article-card">
-              <img
-                src={getCoverPath(post.data.cover)}
-                alt={`Capa do artigo ${post.data.title}`}
-                width="960"
-                height="560"
-                loading="lazy"
-                onerror={`this.onerror=null;this.src='${fallbackCover}';`}
-              />
-              <div class="card-body">
+      {posts.map((post) => (
+        <li>
+          <a
+            href={`/posts/${post.data.slug ?? post.id}/`}
+            class="article-card"
+          >
+            <img
+              src={getCoverPath(post.data.cover)}
+              alt={`Capa do artigo ${post.data.title}`}
+              width="960"
+              height="560"
+              loading="lazy"
+              onerror={`this.onerror=null;this.src='${fallbackCover}';`}
+            />
+
+            <div class="card-body">
+              {post.data.category && (
                 <p class="category">{post.data.category}</p>
-                <h2 class="title">{post.data.title}</h2>
+              )}
+
+              <h2 class="title">{post.data.title}</h2>
+
+              {post.data.description && (
                 <p class="description">{post.data.description}</p>
-                <p class="meta">
-                  {formatDateBR(post.data.date)} • {getAuthorName(post.data.author)} • {getReadingTimeLabel(post.body)}
-                </p>
-              </div>
-            </a>
-          </li>
-        ))
-      }
+              )}
+
+              <p class="meta">
+                {formatDateBR(post.data.date)} • {getAuthorName(post.data.author)} • {getReadingTimeLabel(post.body)}
+              </p>
+            </div>
+          </a>
+        </li>
+      ))}
     </ul>
   </section>
 </BaseLayout>
@@ -109,15 +120,14 @@ const fallbackCover =
     box-shadow: var(--shadow-sm);
     text-decoration: none;
     overflow: hidden;
-    transition: transform 200ms ease, box-shadow 200ms ease,
-      border-color 200ms ease;
+    transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
   }
 
   .article-card:hover,
   .article-card:focus-visible {
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
-    border-color: color-mix(in srgb, var(--line) 70%, var(--accent) 30%);
+    border-color: var(--accent);
   }
 
   .article-card img {
@@ -184,3 +194,4 @@ const fallbackCover =
     }
   }
 </style>
+
