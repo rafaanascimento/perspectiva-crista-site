@@ -7,7 +7,7 @@ const FALLBACK_AUTHOR = {
   bio: 'Conteúdo editorial do Perspectiva Cristã.'
 };
 
-<<<<<<< codex/evoluir-projeto-astro-com-melhorias-seo-htaytj
+
 export const slugifyTerm = (value: string) =>
   value
     .normalize('NFD')
@@ -22,10 +22,10 @@ export const getPostSlug = (post: { id: string; data: { slug?: string } }) => {
   const baseSlug = post.data.slug?.trim() || post.id.replace(/\.md$/i, '');
   return slugifyTerm(baseSlug) || 'post';
 };
-=======
+
 export const getPostSlug = (post: { id: string; data: { slug?: string } }) =>
   post.data.slug?.trim() || post.id;
->>>>>>> main
+
 
 export const getCoverPath = (cover?: string) => {
   if (!cover?.trim()) return '/images/og-default.png';
@@ -37,10 +37,9 @@ export const getAuthorName = (authorId?: string) =>
 
 export const getAuthorProfile = (authorId?: string) =>
   authors.find((author) => author.id === authorId) ?? FALLBACK_AUTHOR;
-<<<<<<< codex/evoluir-projeto-astro-com-melhorias-seo-htaytj
-=======
+
 
 
 export const slugifyTerm = (value: string) =>
   value.toLowerCase().trim().replaceAll(/\s+/g, '-');
->>>>>>> main
+
