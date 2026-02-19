@@ -32,8 +32,9 @@ const fallbackAvatar =
   />
 
   <div class="text">
-    <p class="role">{author.role}</p>
+    <p class="role-label">AUTOR</p>
     <h3>{author.name}</h3>
+    <p class="role">{author.role}</p>
     <p class="bio">{author.bio}</p>
   </div>
 </section>
@@ -42,7 +43,7 @@ const fallbackAvatar =
   .author-card {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 1.2rem;
     margin-top: 0.3rem;
     padding: 1rem 1.1rem;
     border-radius: 0.9rem;
@@ -61,23 +62,33 @@ const fallbackAvatar =
 
   .text {
     min-width: 0;
+    display: grid;
+    gap: 0.28rem;
+  }
+
+  .role-label {
+    margin: 0;
+    font-family: var(--ui-font);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.11em;
+    color: color-mix(in srgb, var(--text-soft) 82%, var(--line) 18%);
+  }
+
+  h3 {
+    margin: 0.1rem 0 0.2rem;
+    font-size: 1.15rem;
+    line-height: 1.25;
+    color: var(--text);
+    font-family: var(--heading-font);
   }
 
   .role {
     margin: 0;
     font-family: var(--ui-font);
-    font-size: 0.76rem;
-    text-transform: uppercase;
-    letter-spacing: 0.11em;
+    font-size: 0.9rem;
+    line-height: 1.45;
     color: var(--text-soft);
-  }
-
-  h3 {
-    margin: 0.28rem 0 0.3rem;
-    font-size: 1.15rem;
-    line-height: 1.25;
-    color: var(--text);
-    font-family: var(--heading-font);
   }
 
   .bio {
