@@ -1,13 +1,14 @@
 ---
 import { getCollection, render } from 'astro:content';
 import PostLayout from '../../layouts/PostLayout.astro';
+import { getReadingTimeLabel } from '../../utils/readingTime';
 import authors from '../../data/authors.json';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
 
   return posts.map((post) => ({
-    params: { slug: post.id },
+    params: { slug: post.data.slug ?? post.id },
     props: { post }
   }));
 }
@@ -15,6 +16,7 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await render(post);
 const author = authors.find((item) => item.id === post.data.author);
+const readingTime = getReadingTimeLabel(post.body);
 
 if (!author) {
   throw new Error(`Author ${post.data.author} not found.`);
@@ -26,6 +28,8 @@ if (!author) {
   description={post.data.description}
   date={post.data.date}
   coverImage={post.data.cover}
+  canonical={`https://seudominio.com/posts/${post.data.slug ?? post.id}/`}
+  readingTime={readingTime}
   author={author}
 >
   <Content />

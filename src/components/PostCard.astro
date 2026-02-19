@@ -6,10 +6,11 @@ interface Props {
   displayTitle: string;
   formattedDate: string;
   author: string;
+  readingTime: string;
   fallbackCover: string;
 }
 
-const { url, cover, title, displayTitle, formattedDate, author, fallbackCover } = Astro.props;
+const { url, cover, title, displayTitle, formattedDate, author, readingTime, fallbackCover } = Astro.props;
 ---
 
 <article class="post-card">
@@ -26,7 +27,7 @@ const { url, cover, title, displayTitle, formattedDate, author, fallbackCover } 
     </div>
     <div class="card-content">
       <h3>{displayTitle}</h3>
-      <p class="meta">{formattedDate} • {author}</p>
+      <p class="meta">{formattedDate} • {author} • {readingTime}</p>
     </div>
   </a>
 </article>

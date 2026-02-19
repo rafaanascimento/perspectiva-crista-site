@@ -5,9 +5,11 @@ import { formatDateBR } from '../utils/formatDateBR';
 
 interface Props {
   title: string;
-  description: string;
+  description?: string;
   date: Date | string;
-  coverImage: string;
+  coverImage?: string;
+  canonical?: string;
+  readingTime: string;
   author: {
     name: string;
     avatar: string;
@@ -16,7 +18,15 @@ interface Props {
   };
 }
 
-const { title, description, date, coverImage, author } = Astro.props;
+const {
+  title,
+  description = 'Leia este artigo no Perspectiva Cristã.',
+  date,
+  coverImage = '/images/og-default.png',
+  canonical,
+  readingTime,
+  author
+} = Astro.props;
 
 const fallbackCover =
   "data:image/svg+xml;utf8," +
@@ -31,7 +41,13 @@ const fallbackCover =
 `);
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout
+  title={title}
+  description={description}
+  image={coverImage}
+  canonical={canonical}
+  type="article"
+>
   <article>
     <header class="post-header">
       <a class="back-link" href="/" aria-label="Voltar para a página inicial">
@@ -39,7 +55,7 @@ const fallbackCover =
         <span>Voltar para a página inicial</span>
       </a>
       <h1>{title}</h1>
-      <p class="meta">Por {author.name} • {formatDateBR(date)}</p>
+      <p class="meta">Por {author.name} • {formatDateBR(date)} • {readingTime}</p>
     </header>
 
     <img
