@@ -1,15 +1,9 @@
 ---
-
 import { getCollection, render } from 'astro:content';
-import PostLayout from '../../layouts/PostLayout.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getReadingTimeLabel } from '../../utils/readingTime';
 import { getAuthorProfile, getCoverPath, getPostSlug } from '../../utils/postHelpers';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
 import { formatDateBR } from '../../utils/formatDateBR';
-import { getReadingTimeLabel } from '../../utils/readingTime';
-import authors from '../../data/authors.json';
-
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
@@ -17,48 +11,22 @@ export async function getStaticPaths() {
   return posts.map((post) => ({
     params: { slug: getPostSlug(post) },
     props: { post }
-    params: {
-      slug: post.data.slug ?? post.id.replace('.md', ''),
-    },
-    props: { post },
-
   }));
 }
 
 const { post } = Astro.props;
 const { Content } = await render(post);
-const author = getAuthorProfile(post.data.author);
-const readingTime = getReadingTimeLabel(post.body);
----
-
-<PostLayout
-  title={post.data.title}
-  description={post.data.description}
-  date={post.data.date}
-  coverImage={getCoverPath(post.data.cover)}
-  canonical={`https://seudominio.com/posts/${getPostSlug(post)}/`}
-  readingTime={readingTime}
-  series={post.data.series}
-  author={author}
-
 
 const {
   title,
   description,
   date,
   cover,
-  author: postAuthorId,
+  author: authorId,
 } = post.data;
 
-const authorData =
-  authors.find((a) => a.id === postAuthorId) ?? null;
-
-const coverPath = cover?.startsWith('/')
-  ? cover
-  : cover
-  ? `/${cover}`
-  : '/images/post-cover.jpg';
-
+const author = getAuthorProfile(authorId);
+const coverPath = getCoverPath(cover);
 const readingTime = getReadingTimeLabel(post.body);
 ---
 
@@ -67,14 +35,13 @@ const readingTime = getReadingTimeLabel(post.body);
   description={description}
   image={coverPath}
   type="article"
-
 >
   <article class="post">
     <header class="post-header">
       <h1>{title}</h1>
 
       <p class="meta">
-        {formatDateBR(date)} • {authorData?.name ?? 'Autor'} • {readingTime}
+        {formatDateBR(date)} • {author.name} • {readingTime}
       </p>
 
       {cover && (
@@ -89,7 +56,7 @@ const readingTime = getReadingTimeLabel(post.body);
     </header>
 
     <div class="content">
-      <slot />
+      <Content />
     </div>
   </article>
 </BaseLayout>
@@ -115,7 +82,6 @@ const readingTime = getReadingTimeLabel(post.body);
   .meta {
     font-size: 0.95rem;
     color: var(--text-soft);
-    font-family: var(--ui-font);
   }
 
   .post img {
@@ -133,12 +99,5 @@ const readingTime = getReadingTimeLabel(post.body);
 
   .content p {
     margin: 1.4rem 0;
-  }
-
-  @media (min-width: 1024px) {
-    .post {
-      margin-left: 0;
-      max-width: 900px;
-    }
   }
 </style>
