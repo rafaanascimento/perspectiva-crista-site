@@ -2,12 +2,8 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CallToAction from '../../components/CallToAction.astro';
-
-import { formatDateBR } from '../../utils/formatDateBR';
-import { getReadingTimeLabel } from '../../utils/readingTime';
-import { getAuthorProfile, getCoverPath, getPostSlug, slugifyTerm } from '../../utils/postHelpers';
-
 import PostCard from '../../components/PostCard.astro';
+
 import { formatDateBR } from '../../utils/formatDateBR';
 import { getReadingTimeLabel } from '../../utils/readingTime';
 import {
@@ -17,7 +13,6 @@ import {
   getPostSlug,
   slugifyTerm
 } from '../../utils/postHelpers';
-
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
@@ -31,19 +26,7 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await render(post);
 
-const {
-  title,
-  description,
-  date,
-  cover,
-  category,
-  author: authorId
-} = post.data;
-
-
-const toCategoryList = (value: string | string[] | undefined) =>
-  (Array.isArray(value) ? value : value ? [value] : []).map((item) => slugifyTerm(item));
-
+const { title, description, date, cover, category, author: authorId } = post.data;
 
 const allPosts = await getCollection('posts');
 const author = getAuthorProfile(authorId);
@@ -54,6 +37,10 @@ const categorySlug = slugifyTerm(category);
 const canonical = new URL(`/posts/${slug}/`, Astro.site ?? Astro.url).href;
 const authorUrl = `/autores/${slugifyTerm(author.name)}/`;
 
+const toCategoryList = (value: string | string[] | undefined) =>
+  (Array.isArray(value) ? value : value ? [value] : []).map((item) =>
+    slugifyTerm(item)
+  );
 
 const currentCategories = toCategoryList(category);
 
@@ -63,36 +50,31 @@ const relatedPosts = allPosts
     if (entrySlug === slug) return false;
 
     const entryCategories = toCategoryList(entry.data.category);
-    return entryCategories.some((entryCategory) => currentCategories.includes(entryCategory));
+    return entryCategories.some((cat) =>
+      currentCategories.includes(cat)
+    );
   })
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-  .slice(0, 3);
-
-
-const relatedPosts = allPosts
-  .filter((entry) => entry.data.category === category && getPostSlug(entry) !== slug)
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
   .slice(0, 3);
 
 const fallbackCover =
   'data:image/svg+xml;utf8,' +
   encodeURIComponent(`
-<svg xmlns='http://www.w3.org/2000/svg' width='960' height='560' viewBox='0 0 960 560'>
-  <rect width='960' height='560' fill='#E9E2D8'/>
+<svg xmlns='http://www.w3.org/2000/svg' width='960' height='560'>
+  <rect width='100%' height='100%' fill='#E9E2D8'/>
   <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle'
-        fill='#6F6355' font-size='34' font-family='Arial, sans-serif'>
+        fill='#6F6355' font-size='34' font-family='Arial'>
     Capa indisponível
   </text>
 </svg>
 `);
 
-
 const articleJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Article',
-  headline: post.data.title,
-  description: post.data.description,
-  datePublished: post.data.date,
+  headline: title,
+  description: description,
+  datePublished: date,
   author: {
     '@type': 'Person',
     name: author.name
@@ -112,7 +94,11 @@ const articleJsonLd = {
   type="article"
   canonical={canonical}
 >
-  <script slot="head" type="application/ld+json" set:html={JSON.stringify(articleJsonLd)} />
+  <script
+    slot="head"
+    type="application/ld+json"
+    set:html={JSON.stringify(articleJsonLd)}
+  />
 
   <article class="post">
     <header class="post-header">
@@ -120,8 +106,9 @@ const articleJsonLd = {
 
       <p class="meta">
         {formatDateBR(date)} •
-        <a href={authorUrl}> {author.name}</a> •
-        <a href={`/categorias/${categorySlug}/`}> {category}</a> • {readingTime}
+        <a href={authorUrl}>{author.name}</a> •
+        <a href={`/categorias/${categorySlug}/`}>{category}</a> •
+        {readingTime}
       </p>
 
       {cover && (
@@ -139,174 +126,28 @@ const articleJsonLd = {
       <Content />
     </div>
 
-    {
-      relatedPosts.length > 0 && (
+    {relatedPosts.length > 0 && (
+      <section class="related" aria-label="Continue explorando">
+        <h2>Continue explorando</h2>
 
-        <section class="related" aria-label="Continue explorando">
-          <h2>Continue explorando</h2>
-          <ul class="related-list">
-            {relatedPosts.map((entry) => (
-              <li>
-                <a href={`/posts/${getPostSlug(entry)}/`}>
-                  <span class="related-title">{entry.data.title}</span>
-                  <span class="related-meta">{formatDateBR(entry.data.date)}</span>
-                </a>
-
-        <section class="related" aria-label="Leia também">
-          <h2>Leia também</h2>
-          <ul class="related-list">
-            {relatedPosts.map((entry) => (
-              <li>
-                <PostCard
-                  url={`/posts/${getPostSlug(entry)}/`}
-                  cover={getCoverPath(entry.data.cover)}
-                  title={entry.data.title}
-                  formattedDate={formatDateBR(entry.data.date)}
-                  author={getAuthorName(entry.data.author)}
-                  readingTime={getReadingTimeLabel(entry.body)}
-                  fallbackCover={fallbackCover}
-                />
-
-              </li>
-            ))}
-          </ul>
-        </section>
-      )
-    }
+        <ul class="related-list">
+          {relatedPosts.map((entry) => (
+            <li>
+              <PostCard
+                url={`/posts/${getPostSlug(entry)}/`}
+                cover={getCoverPath(entry.data.cover)}
+                title={entry.data.title}
+                formattedDate={formatDateBR(entry.data.date)}
+                author={getAuthorName(entry.data.author)}
+                readingTime={getReadingTimeLabel(entry.body)}
+                fallbackCover={fallbackCover}
+              />
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
 
     <CallToAction />
   </article>
 </BaseLayout>
-
-<style>
-  .post {
-    max-width: 820px;
-    margin: 0 auto;
-  }
-
-  .post-header {
-    display: grid;
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-
-  h1 {
-    margin: 0;
-    font-size: clamp(2rem, 1.3rem + 2vw, 2.8rem);
-    line-height: 1.15;
-  }
-
-  .meta {
-    font-size: 0.95rem;
-    color: var(--text-soft);
-    font-family: var(--ui-font);
-  }
-
-  .meta a {
-    color: var(--accent);
-    text-decoration: none;
-    font-weight: 600;
-  }
-
-  .meta a:hover,
-  .meta a:focus-visible {
-    text-decoration: underline;
-  }
-
-  .post img {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
-    border-radius: 0.75rem;
-  }
-
-  .content {
-    font-size: 1.1rem;
-    line-height: 1.8;
-  }
-
-  .content p {
-    margin: 1.4rem 0;
-  }
-
-  .related {
-    margin-top: 2.2rem;
-    display: grid;
-
-    gap: 0.9rem;
-
-    gap: 1rem;
-
-  }
-
-  .related h2 {
-    margin: 0;
-    font-family: var(--heading-font);
-    font-size: clamp(1.5rem, 1.2rem + 1vw, 1.9rem);
-  }
-
-  .related-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-
-    gap: 0.65rem;
-  }
-
-  .related-list a {
-    display: grid;
-    gap: 0.25rem;
-    text-decoration: none;
-    padding: 0.75rem 0.85rem;
-    border-radius: 0.7rem;
-    border: 1px solid var(--line);
-    background: var(--surface);
-    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
-  }
-
-  .related-list a:hover,
-  .related-list a:focus-visible {
-    transform: translateY(-1px);
-    box-shadow: var(--shadow-sm);
-    border-color: color-mix(in srgb, var(--line) 72%, var(--accent) 28%);
-  }
-
-  .related-title {
-    font-family: var(--heading-font);
-    color: var(--text);
-    line-height: 1.35;
-  }
-
-  .related-meta {
-    font-family: var(--ui-font);
-    font-size: 0.84rem;
-    color: var(--text-soft);
-
-    gap: 1rem;
-    grid-template-columns: 1fr;
-  }
-
-  .related-list li {
-    min-width: 0;
-  }
-
-  @media (min-width: 768px) {
-    .related-list {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-  }
-
-  @media (min-width: 1024px) {
-    .post {
-      margin-left: 0;
-      max-width: 900px;
-    }
-
-    .related-list {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-</style>
