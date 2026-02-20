@@ -39,11 +39,20 @@ const coverPath = getCoverPath(cover);
 const readingTime = getReadingTimeLabel(post.body);
 const slug = getPostSlug(post);
 const categorySlug = slugifyTerm(category);
-const canonical = new URL(`/posts/${slug}/`, Astro.site ?? Astro.url).href;
+
+const canonical = new URL(
+  `/posts/${slug}/`,
+  Astro.site ?? 'https://perspectiva-crista-site.pages.dev/'
+).href;
+
 const authorUrl = `/sobre/#autor-${slugifyTerm(author.name)}`;
 
 const relatedPosts = allPosts
-  .filter((entry) => entry.data.category === category && getPostSlug(entry) !== slug)
+  .filter(
+    (entry) =>
+      entry.data.category === category &&
+      getPostSlug(entry) !== slug
+  )
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
   .slice(0, 3);
 
@@ -59,15 +68,12 @@ const fallbackCover =
 </svg>
 `);
 
-const canonical = new URL(`/posts/${slug}/`, Astro.site ?? Astro.url).href;
-
-
 const articleJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Article',
-  headline: post.data.title,
-  description: post.data.description,
-  datePublished: post.data.date,
+  headline: title,
+  description: description,
+  datePublished: date,
   author: {
     '@type': 'Person',
     name: author.name
@@ -87,7 +93,11 @@ const articleJsonLd = {
   type="article"
   canonical={canonical}
 >
-  <script slot="head" type="application/ld+json" set:html={JSON.stringify(articleJsonLd)} />
+  <script
+    slot="head"
+    type="application/ld+json"
+    set:html={JSON.stringify(articleJsonLd)}
+  />
 
   <article class="post">
     <header class="post-header">
@@ -95,8 +105,9 @@ const articleJsonLd = {
 
       <p class="meta">
         {formatDateBR(date)} •
-        <a href={authorUrl}> {author.name}</a> •
-        <a href={`/categorias/${categorySlug}/`}> {category}</a> • {readingTime}
+        <a href={authorUrl}>{author.name}</a> •
+        <a href={`/categorias/${categorySlug}/`}>{category}</a> •
+        {readingTime}
       </p>
 
       {cover && (
@@ -114,28 +125,26 @@ const articleJsonLd = {
       <Content />
     </div>
 
-    {
-      relatedPosts.length > 0 && (
-        <section class="related" aria-label="Leia também">
-          <h2>Leia também</h2>
-          <ul class="related-list">
-            {relatedPosts.map((entry) => (
-              <li>
-                <PostCard
-                  url={`/posts/${getPostSlug(entry)}/`}
-                  cover={getCoverPath(entry.data.cover)}
-                  title={entry.data.title}
-                  formattedDate={formatDateBR(entry.data.date)}
-                  author={getAuthorName(entry.data.author)}
-                  readingTime={getReadingTimeLabel(entry.body)}
-                  fallbackCover={fallbackCover}
-                />
-              </li>
-            ))}
-          </ul>
-        </section>
-      )
-    }
+    {relatedPosts.length > 0 && (
+      <section class="related" aria-label="Leia também">
+        <h2>Leia também</h2>
+        <ul class="related-list">
+          {relatedPosts.map((entry) => (
+            <li>
+              <PostCard
+                url={`/posts/${getPostSlug(entry)}/`}
+                cover={getCoverPath(entry.data.cover)}
+                title={entry.data.title}
+                formattedDate={formatDateBR(entry.data.date)}
+                author={getAuthorName(entry.data.author)}
+                readingTime={getReadingTimeLabel(entry.body)}
+                fallbackCover={fallbackCover}
+              />
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
   </article>
 </BaseLayout>
 
@@ -210,10 +219,6 @@ const articleJsonLd = {
     display: grid;
     gap: 1rem;
     grid-template-columns: 1fr;
-  }
-
-  .related-list li {
-    min-width: 0;
   }
 
   @media (min-width: 768px) {
