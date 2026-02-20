@@ -38,6 +38,7 @@ const author = getAuthorProfile(authorId);
 const coverPath = getCoverPath(cover);
 const readingTime = getReadingTimeLabel(post.body);
 const slug = getPostSlug(post);
+<<<<<<< codex/enhance-astro-project-with-seo-setup-axksc8
 const categorySlug = slugifyTerm(category);
 const canonical = new URL(`/posts/${slug}/`, Astro.site ?? Astro.url).href;
 const authorUrl = `/sobre/#autor-${slugifyTerm(author.name)}`;
@@ -58,6 +59,9 @@ const fallbackCover =
   </text>
 </svg>
 `);
+=======
+const canonical = new URL(`/posts/${slug}/`, Astro.site ?? Astro.url).href;
+>>>>>>> main
 
 const articleJsonLd = {
   '@context': 'https://schema.org',
