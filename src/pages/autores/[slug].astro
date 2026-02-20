@@ -5,7 +5,7 @@ import PostCard from '../../components/PostCard.astro';
 import authors from '../../data/authors.json';
 import { formatDateBR } from '../../utils/formatDateBR';
 import { getReadingTimeLabel } from '../../utils/readingTime';
-import { getCoverPath, getPostSlug, slugifyTerm } from '../../utils/postHelpers';
+import { getAuthorProfile, getCoverPath, getPostSlug, slugifyTerm } from '../../utils/postHelpers';
 
 const fallbackCover =
   'data:image/svg+xml;utf8,' +
@@ -36,13 +36,14 @@ export async function getStaticPaths() {
 }
 
 const { author, authorPosts, slug } = Astro.props;
+const authorProfile = getAuthorProfile(author.id);
 const canonical = `https://perspectiva-crista-site.pages.dev/autores/${slug}/`;
 
 const personJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Person',
   name: author.name,
-  description: author.bio,
+  description: authorProfile.bio,
   image: new URL(author.avatar, Astro.site ?? Astro.url).href,
   url: canonical
 };
@@ -50,7 +51,7 @@ const personJsonLd = {
 
 <BaseLayout
   title={`${author.name} | Autores | Perspectiva Cristã`}
-  description={author.bio}
+  description={authorProfile.bio}
   image={author.avatar}
   canonical={canonical}
 >
@@ -61,8 +62,8 @@ const personJsonLd = {
       <img src={author.avatar} alt={`Foto de ${author.name}`} width="120" height="120" loading="lazy" />
       <div>
         <h1>{author.name}</h1>
-        <p class="role">{author.role}</p>
-        <p class="bio">{author.bio}</p>
+        <p class="role">{authorProfile.role}</p>
+        <p class="bio">{authorProfile.bio}</p>
       </div>
     </header>
 
