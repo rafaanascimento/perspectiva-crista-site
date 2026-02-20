@@ -5,7 +5,6 @@ interface Props {
   image?: string;
   type?: string;
   canonical?: string;
-  type?: string;
 }
 
 const {
@@ -16,8 +15,41 @@ const {
   canonical
 } = Astro.props;
 
-const canonicalUrl = new URL(canonical ?? Astro.url.pathname, Astro.url).href;
-const imageUrl = new URL(image || '/images/og-default.png', Astro.url).href;
+const baseUrl = Astro.site ?? Astro.url;
+const canonicalPath = canonical ? new URL(canonical, baseUrl).pathname : Astro.url.pathname;
+const canonicalUrl = new URL(canonicalPath, baseUrl).href;
+const imageUrl = new URL(image || '/images/og-default.png', baseUrl).href;
+
+const organizationJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Perspectiva Cristã',
+  url: 'https://perspectiva-crista-site.pages.dev/',
+  description: 'Blog cristão focado em discipulado e crescimento espiritual.',
+  areaServed: 'BR',
+  foundingLocation: {
+    '@type': 'Place',
+    address: {
+      '@type': 'PostalAddress',
+      addressCountry: 'BR'
+    }
+  }
+};
+
+const websiteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Perspectiva Cristã',
+  url: 'https://perspectiva-crista-site.pages.dev/'
+};
+
+const blogJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  name: 'Perspectiva Cristã',
+  url: 'https://perspectiva-crista-site.pages.dev/',
+  description: 'Reflexões bíblicas, fé e propósito para o dia a dia.'
+};
 ---
 
 <!doctype html>
@@ -27,6 +59,7 @@ const imageUrl = new URL(image || '/images/og-default.png', Astro.url).href;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="theme-color" content="#ffffff" />
     <link rel="canonical" href={canonicalUrl} />
 
     <meta property="og:type" content={type} />
@@ -34,18 +67,32 @@ const imageUrl = new URL(image || '/images/og-default.png', Astro.url).href;
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={imageUrl} />
+    <meta property="og:site_name" content="Perspectiva Cristã" />
+    <meta property="og:locale" content="pt_BR" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={imageUrl} />
+    <meta name="twitter:url" content={canonicalUrl} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap"
+    />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap"
       rel="stylesheet"
     />
+
+    <script type="application/ld+json" set:html={JSON.stringify(organizationJsonLd)} />
+    <script type="application/ld+json" set:html={JSON.stringify(websiteJsonLd)} />
+    <script type="application/ld+json" set:html={JSON.stringify(blogJsonLd)} />
+    <slot name="head" />
 
     <script is:inline>
       (() => {
@@ -288,6 +335,7 @@ const imageUrl = new URL(image || '/images/og-default.png', Astro.url).href;
           <nav class="site-nav" aria-label="Principal">
             <a href="/">Início</a>
             <a href="/artigos/">Artigos</a>
+            <a href="/sobre/">Sobre</a>
           </nav>
 
           <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Alternar tema">
