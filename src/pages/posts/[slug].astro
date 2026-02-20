@@ -6,7 +6,7 @@ import CallToAction from '../../components/CallToAction.astro';
 import { formatDateBR } from '../../utils/formatDateBR';
 import { getReadingTimeLabel } from '../../utils/readingTime';
 import { getAuthorProfile, getCoverPath, getPostSlug, slugifyTerm } from '../../utils/postHelpers';
-=======
+
 import PostCard from '../../components/PostCard.astro';
 import { formatDateBR } from '../../utils/formatDateBR';
 import { getReadingTimeLabel } from '../../utils/readingTime';
@@ -17,7 +17,7 @@ import {
   getPostSlug,
   slugifyTerm
 } from '../../utils/postHelpers';
->>>>>>> main
+
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
@@ -40,12 +40,11 @@ const {
   author: authorId
 } = post.data;
 
-<<<<<<< codex/enhance-astro-project-with-seo-setup-wzhgcw
+
 const toCategoryList = (value: string | string[] | undefined) =>
   (Array.isArray(value) ? value : value ? [value] : []).map((item) => slugifyTerm(item));
 
-=======
->>>>>>> main
+
 const allPosts = await getCollection('posts');
 const author = getAuthorProfile(authorId);
 const coverPath = getCoverPath(cover);
@@ -55,7 +54,7 @@ const categorySlug = slugifyTerm(category);
 const canonical = new URL(`/posts/${slug}/`, Astro.site ?? Astro.url).href;
 const authorUrl = `/autores/${slugifyTerm(author.name)}/`;
 
-<<<<<<< codex/enhance-astro-project-with-seo-setup-wzhgcw
+
 const currentCategories = toCategoryList(category);
 
 const relatedPosts = allPosts
@@ -69,7 +68,7 @@ const relatedPosts = allPosts
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
   .slice(0, 3);
 
-=======
+
 const relatedPosts = allPosts
   .filter((entry) => entry.data.category === category && getPostSlug(entry) !== slug)
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
@@ -87,7 +86,7 @@ const fallbackCover =
 </svg>
 `);
 
->>>>>>> main
+
 const articleJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Article',
@@ -142,7 +141,7 @@ const articleJsonLd = {
 
     {
       relatedPosts.length > 0 && (
-<<<<<<< codex/enhance-astro-project-with-seo-setup-wzhgcw
+
         <section class="related" aria-label="Continue explorando">
           <h2>Continue explorando</h2>
           <ul class="related-list">
@@ -152,7 +151,7 @@ const articleJsonLd = {
                   <span class="related-title">{entry.data.title}</span>
                   <span class="related-meta">{formatDateBR(entry.data.date)}</span>
                 </a>
-=======
+
         <section class="related" aria-label="Leia também">
           <h2>Leia também</h2>
           <ul class="related-list">
@@ -167,7 +166,7 @@ const articleJsonLd = {
                   readingTime={getReadingTimeLabel(entry.body)}
                   fallbackCover={fallbackCover}
                 />
->>>>>>> main
+
               </li>
             ))}
           </ul>
@@ -234,11 +233,11 @@ const articleJsonLd = {
   .related {
     margin-top: 2.2rem;
     display: grid;
-<<<<<<< codex/enhance-astro-project-with-seo-setup-wzhgcw
+
     gap: 0.9rem;
-=======
+
     gap: 1rem;
->>>>>>> main
+
   }
 
   .related h2 {
@@ -252,7 +251,7 @@ const articleJsonLd = {
     margin: 0;
     padding: 0;
     display: grid;
-<<<<<<< codex/enhance-astro-project-with-seo-setup-wzhgcw
+
     gap: 0.65rem;
   }
 
@@ -284,7 +283,7 @@ const articleJsonLd = {
     font-family: var(--ui-font);
     font-size: 0.84rem;
     color: var(--text-soft);
-=======
+
     gap: 1rem;
     grid-template-columns: 1fr;
   }
@@ -297,7 +296,7 @@ const articleJsonLd = {
     .related-list {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
->>>>>>> main
+
   }
 
   @media (min-width: 1024px) {
