@@ -1,9 +1,10 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import CallToAction from '../../components/CallToAction.astro';
 import { formatDateBR } from '../../utils/formatDateBR';
 import { getReadingTimeLabel } from '../../utils/readingTime';
-import { getAuthorProfile, getCoverPath, getPostSlug } from '../../utils/postHelpers';
+import { getAuthorProfile, getCoverPath, getPostSlug, slugifyTerm } from '../../utils/postHelpers';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
@@ -22,14 +23,76 @@ const {
   description,
   date,
   cover,
+  category,
   author: authorId
 } = post.data;
 
+const toCategoryList = (value: string | string[] | undefined) =>
+  (Array.isArray(value) ? value : value ? [value] : []).map((item) => slugifyTerm(item));
+
+const allPosts = await getCollection('posts');
 const author = getAuthorProfile(authorId);
 const coverPath = getCoverPath(cover);
 const readingTime = getReadingTimeLabel(post.body);
 const slug = getPostSlug(post);
-const canonical = `https://seudominio.com/posts/${slug}/`;
+const categorySlug = slugifyTerm(category);
+const canonical = new URL(`/posts/${slug}/`, Astro.site ?? Astro.url).href;
+const authorUrl = `/autores/${slugifyTerm(author.name)}/`;
+
+const currentCategories = toCategoryList(category);
+
+const relatedPosts = allPosts
+  .filter((entry) => {
+    const entrySlug = getPostSlug(entry);
+    if (entrySlug === slug) return false;
+
+    const entryCategories = toCategoryList(entry.data.category);
+    return entryCategories.some((entryCategory) => currentCategories.includes(entryCategory));
+  })
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3);
+
+const articleJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.date,
+  author: {
+    '@type': 'Person',
+    name: author.name
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'Perspectiva Cristã'
+  },
+  mainEntityOfPage: canonical
+};
+
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Início',
+      item: 'https://perspectiva-crista-site.pages.dev/'
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: category,
+      item: `https://perspectiva-crista-site.pages.dev/categorias/${categorySlug}/`
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: title,
+      item: canonical
+    }
+  ]
+};
 ---
 
 <BaseLayout
@@ -39,12 +102,17 @@ const canonical = `https://seudominio.com/posts/${slug}/`;
   type="article"
   canonical={canonical}
 >
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(articleJsonLd)} />
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(breadcrumbJsonLd)} />
+
   <article class="post">
     <header class="post-header">
       <h1>{title}</h1>
 
       <p class="meta">
-        {formatDateBR(date)} • {author.name} • {readingTime}
+        {formatDateBR(date)} •
+        <a href={authorUrl}> {author.name}</a> •
+        <a href={`/categorias/${categorySlug}/`}> {category}</a> • {readingTime}
       </p>
 
       {cover && (
@@ -53,7 +121,7 @@ const canonical = `https://seudominio.com/posts/${slug}/`;
           alt={`Capa do artigo ${title}`}
           width="960"
           height="560"
-          loading="eager"
+          loading="lazy"
         />
       )}
     </header>
@@ -61,6 +129,26 @@ const canonical = `https://seudominio.com/posts/${slug}/`;
     <div class="content">
       <Content />
     </div>
+
+    {
+      relatedPosts.length > 0 && (
+        <section class="related" aria-label="Continue explorando">
+          <h2>Continue explorando</h2>
+          <ul class="related-list">
+            {relatedPosts.map((entry) => (
+              <li>
+                <a href={`/posts/${getPostSlug(entry)}/`}>
+                  <span class="related-title">{entry.data.title}</span>
+                  <span class="related-meta">{formatDateBR(entry.data.date)}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    <CallToAction />
   </article>
 </BaseLayout>
 
@@ -88,6 +176,17 @@ const canonical = `https://seudominio.com/posts/${slug}/`;
     font-family: var(--ui-font);
   }
 
+  .meta a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .meta a:hover,
+  .meta a:focus-visible {
+    text-decoration: underline;
+  }
+
   .post img {
     width: 100%;
     height: auto;
@@ -103,6 +202,56 @@ const canonical = `https://seudominio.com/posts/${slug}/`;
 
   .content p {
     margin: 1.4rem 0;
+  }
+
+  .related {
+    margin-top: 2.2rem;
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .related h2 {
+    margin: 0;
+    font-family: var(--heading-font);
+    font-size: clamp(1.5rem, 1.2rem + 1vw, 1.9rem);
+  }
+
+  .related-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .related-list a {
+    display: grid;
+    gap: 0.25rem;
+    text-decoration: none;
+    padding: 0.75rem 0.85rem;
+    border-radius: 0.7rem;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+  }
+
+  .related-list a:hover,
+  .related-list a:focus-visible {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+    border-color: color-mix(in srgb, var(--line) 72%, var(--accent) 28%);
+  }
+
+  .related-title {
+    font-family: var(--heading-font);
+    color: var(--text);
+    line-height: 1.35;
+  }
+
+  .related-meta {
+    font-family: var(--ui-font);
+    font-size: 0.84rem;
+    color: var(--text-soft);
   }
 
   @media (min-width: 1024px) {
