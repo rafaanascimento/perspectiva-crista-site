@@ -1,0 +1,159 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import authors from '../../data/authors.json';
+import { formatDateBR } from '../../utils/formatDateBR';
+import { getReadingTimeLabel } from '../../utils/readingTime';
+import { getCoverPath, getPostSlug, slugifyTerm } from '../../utils/postHelpers';
+
+const fallbackCover =
+  'data:image/svg+xml;utf8,' +
+  encodeURIComponent(`
+<svg xmlns='http://www.w3.org/2000/svg' width='960' height='560' viewBox='0 0 960 560'>
+  <rect width='960' height='560' fill='#E9E2D8'/>
+  <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle'
+        fill='#6F6355' font-size='34' font-family='Arial, sans-serif'>
+    Capa indisponível
+  </text>
+</svg>
+`);
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+
+  return authors.map((author) => {
+    const slug = slugifyTerm(author.name);
+    const authorPosts = posts
+      .filter((post) => post.data.author === author.id)
+      .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+    return {
+      params: { slug },
+      props: { author, authorPosts, slug }
+    };
+  });
+}
+
+const { author, authorPosts, slug } = Astro.props;
+const canonical = `https://perspectiva-crista-site.pages.dev/autores/${slug}/`;
+
+const personJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: author.name,
+  description: author.bio,
+  image: new URL(author.avatar, Astro.site ?? Astro.url).href,
+  url: canonical
+};
+---
+
+<BaseLayout
+  title={`${author.name} | Autores | Perspectiva Cristã`}
+  description={author.bio}
+  image={author.avatar}
+  canonical={canonical}
+>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(personJsonLd)} />
+
+  <article class="author-page">
+    <header class="author-header">
+      <img src={author.avatar} alt={`Foto de ${author.name}`} width="120" height="120" loading="lazy" />
+      <div>
+        <h1>{author.name}</h1>
+        <p class="role">{author.role}</p>
+        <p class="bio">{author.bio}</p>
+      </div>
+    </header>
+
+    <section aria-label={`Artigos de ${author.name}`}>
+      <h2>Artigos de {author.name}</h2>
+
+      {
+        authorPosts.length > 0 ? (
+          <ul class="posts-list">
+            {authorPosts.map((post) => (
+              <li>
+                <PostCard
+                  url={`/posts/${getPostSlug(post)}/`}
+                  cover={getCoverPath(post.data.cover)}
+                  title={post.data.title}
+                  formattedDate={formatDateBR(post.data.date)}
+                  author={author.name}
+                  readingTime={getReadingTimeLabel(post.body)}
+                  fallbackCover={fallbackCover}
+                />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="empty">Ainda não há artigos publicados por este autor.</p>
+        )
+      }
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .author-page {
+    max-width: 900px;
+    margin: 0 auto;
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .author-header {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .author-header img {
+    border-radius: 999px;
+    object-fit: cover;
+    border: 1px solid var(--line);
+    background: var(--surface-soft);
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(2rem, 1.3rem + 2vw, 2.8rem);
+    line-height: 1.15;
+  }
+
+  .role,
+  .bio,
+  .empty {
+    margin: 0.45rem 0 0;
+    font-family: var(--ui-font);
+    color: var(--text-soft);
+    line-height: 1.65;
+  }
+
+  h2 {
+    margin: 0 0 0.9rem;
+    font-size: clamp(1.4rem, 1.2rem + 0.8vw, 1.8rem);
+  }
+
+  .posts-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 768px) {
+    .posts-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 640px) {
+    .author-header {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

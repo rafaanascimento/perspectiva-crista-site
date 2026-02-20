@@ -40,7 +40,7 @@ const readingTime = getReadingTimeLabel(post.body);
 const slug = getPostSlug(post);
 const categorySlug = slugifyTerm(category);
 const canonical = new URL(`/posts/${slug}/`, Astro.site ?? Astro.url).href;
-const authorUrl = `/sobre/#autor-${slugifyTerm(author.name)}`;
+const authorUrl = `/autores/${slugifyTerm(author.name)}/`;
 
 const relatedPosts = allPosts
   .filter((entry) => entry.data.category === category && getPostSlug(entry) !== slug)
