@@ -1,9 +1,16 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
 import { formatDateBR } from '../../utils/formatDateBR';
 import { getReadingTimeLabel } from '../../utils/readingTime';
-import { getAuthorProfile, getCoverPath, getPostSlug } from '../../utils/postHelpers';
+import {
+  getAuthorName,
+  getAuthorProfile,
+  getCoverPath,
+  getPostSlug,
+  slugifyTerm
+} from '../../utils/postHelpers';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
@@ -22,21 +29,51 @@ const {
   description,
   date,
   cover,
+  category,
   author: authorId
 } = post.data;
 
+const allPosts = await getCollection('posts');
 const author = getAuthorProfile(authorId);
 const coverPath = getCoverPath(cover);
 const readingTime = getReadingTimeLabel(post.body);
 const slug = getPostSlug(post);
-const canonical = new URL(`/posts/${slug}/`, Astro.site ?? Astro.url).href;
+const categorySlug = slugifyTerm(category);
+
+const canonical = new URL(
+  `/posts/${slug}/`,
+  Astro.site ?? 'https://perspectiva-crista-site.pages.dev/'
+).href;
+
+const authorUrl = `/sobre/#autor-${slugifyTerm(author.name)}`;
+
+const relatedPosts = allPosts
+  .filter(
+    (entry) =>
+      entry.data.category === category &&
+      getPostSlug(entry) !== slug
+  )
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3);
+
+const fallbackCover =
+  'data:image/svg+xml;utf8,' +
+  encodeURIComponent(`
+<svg xmlns='http://www.w3.org/2000/svg' width='960' height='560' viewBox='0 0 960 560'>
+  <rect width='960' height='560' fill='#E9E2D8'/>
+  <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle'
+        fill='#6F6355' font-size='34' font-family='Arial, sans-serif'>
+    Capa indisponível
+  </text>
+</svg>
+`);
 
 const articleJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Article',
-  headline: post.data.title,
-  description: post.data.description,
-  datePublished: post.data.date,
+  headline: title,
+  description: description,
+  datePublished: date,
   author: {
     '@type': 'Person',
     name: author.name
@@ -56,14 +93,21 @@ const articleJsonLd = {
   type="article"
   canonical={canonical}
 >
-  <script slot="head" type="application/ld+json" set:html={JSON.stringify(articleJsonLd)} />
+  <script
+    slot="head"
+    type="application/ld+json"
+    set:html={JSON.stringify(articleJsonLd)}
+  />
 
   <article class="post">
     <header class="post-header">
       <h1>{title}</h1>
 
       <p class="meta">
-        {formatDateBR(date)} • {author.name} • {readingTime}
+        {formatDateBR(date)} •
+        <a href={authorUrl}>{author.name}</a> •
+        <a href={`/categorias/${categorySlug}/`}>{category}</a> •
+        {readingTime}
       </p>
 
       {cover && (
@@ -80,6 +124,27 @@ const articleJsonLd = {
     <div class="content">
       <Content />
     </div>
+
+    {relatedPosts.length > 0 && (
+      <section class="related" aria-label="Leia também">
+        <h2>Leia também</h2>
+        <ul class="related-list">
+          {relatedPosts.map((entry) => (
+            <li>
+              <PostCard
+                url={`/posts/${getPostSlug(entry)}/`}
+                cover={getCoverPath(entry.data.cover)}
+                title={entry.data.title}
+                formattedDate={formatDateBR(entry.data.date)}
+                author={getAuthorName(entry.data.author)}
+                readingTime={getReadingTimeLabel(entry.body)}
+                fallbackCover={fallbackCover}
+              />
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
   </article>
 </BaseLayout>
 
@@ -107,6 +172,17 @@ const articleJsonLd = {
     font-family: var(--ui-font);
   }
 
+  .meta a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .meta a:hover,
+  .meta a:focus-visible {
+    text-decoration: underline;
+  }
+
   .post img {
     width: 100%;
     height: auto;
@@ -124,10 +200,41 @@ const articleJsonLd = {
     margin: 1.4rem 0;
   }
 
+  .related {
+    margin-top: 2.2rem;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .related h2 {
+    margin: 0;
+    font-family: var(--heading-font);
+    font-size: clamp(1.5rem, 1.2rem + 1vw, 1.9rem);
+  }
+
+  .related-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 768px) {
+    .related-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
   @media (min-width: 1024px) {
     .post {
       margin-left: 0;
       max-width: 900px;
+    }
+
+    .related-list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
 </style>
