@@ -5,7 +5,6 @@ interface Props {
   image?: string;
   type?: string;
   canonical?: string;
-  type?: string;
 }
 
 const {
@@ -16,8 +15,10 @@ const {
   canonical
 } = Astro.props;
 
-const canonicalUrl = new URL(canonical ?? Astro.url.pathname, Astro.url).href;
-const imageUrl = new URL(image || '/images/og-default.png', Astro.url).href;
+const baseUrl = Astro.site ?? Astro.url;
+const canonicalPath = canonical ? new URL(canonical, baseUrl).pathname : Astro.url.pathname;
+const canonicalUrl = new URL(canonicalPath, baseUrl).href;
+const imageUrl = new URL(image || '/images/og-default.png', baseUrl).href;
 ---
 
 <!doctype html>
