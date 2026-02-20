@@ -19,6 +19,29 @@ const baseUrl = Astro.site ?? Astro.url;
 const canonicalPath = canonical ? new URL(canonical, baseUrl).pathname : Astro.url.pathname;
 const canonicalUrl = new URL(canonicalPath, baseUrl).href;
 const imageUrl = new URL(image || '/images/og-default.png', baseUrl).href;
+
+const organizationJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Perspectiva Cristã',
+  url: 'https://perspectiva-crista-site.pages.dev/',
+  description: 'Blog cristão focado em discipulado e crescimento espiritual.',
+  areaServed: 'BR',
+  foundingLocation: {
+    '@type': 'Place',
+    address: {
+      '@type': 'PostalAddress',
+      addressCountry: 'BR'
+    }
+  }
+};
+
+const websiteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Perspectiva Cristã',
+  url: 'https://perspectiva-crista-site.pages.dev/'
+};
 ---
 
 <!doctype html>
@@ -28,6 +51,7 @@ const imageUrl = new URL(image || '/images/og-default.png', baseUrl).href;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="theme-color" content="#ffffff" />
     <link rel="canonical" href={canonicalUrl} />
 
     <meta property="og:type" content={type} />
@@ -42,11 +66,16 @@ const imageUrl = new URL(image || '/images/og-default.png', baseUrl).href;
     <meta name="twitter:image" content={imageUrl} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap"
       rel="stylesheet"
     />
+
+    <script type="application/ld+json" set:html={JSON.stringify(organizationJsonLd)} />
+    <script type="application/ld+json" set:html={JSON.stringify(websiteJsonLd)} />
+    <slot name="head" />
 
     <script is:inline>
       (() => {
