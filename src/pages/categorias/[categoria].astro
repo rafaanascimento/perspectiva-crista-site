@@ -20,6 +20,9 @@ export async function getStaticPaths() {
 }
 
 const { categoria, posts } = Astro.props;
+const categoriaSlug = slugifyTerm(categoria);
+const seoHeading = `Artigos sobre ${categoria}`;
+const seoDescription = `Explore estudos bíblicos, reflexões e aplicações práticas sobre ${categoria}. Conteúdo cristão para fortalecer sua fé no dia a dia.`;
 
 const fallbackCover =
   "data:image/svg+xml;utf8," +
@@ -35,13 +38,13 @@ const fallbackCover =
 ---
 
 <BaseLayout
-  title={`${categoria} | Categorias | Perspectiva Cristã`}
-  description={`Artigos sobre ${categoria} no Perspectiva Cristã.`}
-  canonical={`https://seudominio.com/categorias/${slugifyTerm(categoria)}/`}
+  title={`${seoHeading} | Perspectiva Cristã`}
+  description={seoDescription}
+  canonical={`https://perspectiva-crista-site.pages.dev/categorias/${categoriaSlug}/`}
 >
   <section class="taxonomy-page" aria-label={`Artigos da categoria ${categoria}`}>
-    <h1>{categoria}</h1>
-    <p class="intro">Artigos sobre {categoria} no Perspectiva Cristã.</p>
+    <h1>{seoHeading}</h1>
+    <p class="intro">{seoDescription}</p>
     <EditorialPostsGrid posts={posts} fallbackCover={fallbackCover} />
   </section>
 </BaseLayout>
