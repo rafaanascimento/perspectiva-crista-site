@@ -7,10 +7,10 @@ interface Props {
 }
 
 const {
-  title = 'Receba nossas novidades',
-  description = 'Entre para a newsletter editorial e receba estudos bíblicos, reflexões práticas e conteúdos exclusivos para crescimento espiritual.',
+  title = 'Receba estudos bíblicos exclusivos no seu e-mail',
+  description = 'Entre para a newsletter editorial e receba reflexões práticas, novos artigos e materiais selecionados para fortalecer sua caminhada cristã.',
   buttonLabel = 'Quero receber por e-mail',
-  note = 'Sem spam. Você poderá cancelar quando quiser.'
+  note = 'Sem spam. Apenas conteúdo relevante e você pode sair quando quiser.'
 } = Astro.props;
 ---
 
@@ -38,96 +38,114 @@ const {
 </section>
 
 <style>
+  .newsletter {
+    border-radius: 1.2rem;
+    background: linear-gradient(
+      130deg,
+      color-mix(in srgb, var(--surface) 72%, var(--surface-soft) 28%),
+      color-mix(in srgb, var(--surface) 88%, var(--bg) 12%)
+    );
+    border: 1px solid color-mix(in srgb, var(--line) 76%, var(--accent) 24%);
+    box-shadow: var(--shadow-sm);
+  }
+
   .newsletter-inner {
     width: 100%;
-    max-width: 860px;
+    max-width: 920px;
+    margin: 0 auto;
     box-sizing: border-box;
-    overflow-x: hidden;
-    padding: clamp(1.2rem, 1.8vw, 1.7rem);
-    border: 1px solid var(--line);
-    border-radius: 1rem;
-    background: var(--surface);
-    box-shadow: var(--shadow-sm);
+    padding: clamp(1.25rem, 2vw, 2rem);
     display: grid;
-    gap: 0.75rem;
+    gap: 0.8rem;
   }
 
   .newsletter h2 {
     margin: 0;
-    font-size: clamp(1.55rem, 1.2rem + 1vw, 2rem);
+    font-size: clamp(1.4rem, 1.1rem + 1.1vw, 2rem);
     line-height: 1.2;
   }
 
   .description,
   .note {
     margin: 0;
-    width: 100%;
-    max-width: 100%;
     font-family: var(--ui-font);
-    line-height: 1.6;
+    line-height: 1.65;
     color: var(--text-soft);
   }
 
   .description {
-    font-size: 0.95rem;
+    font-size: 0.96rem;
+    max-width: 68ch;
   }
 
   .newsletter-form {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 0.7rem;
+    align-items: end;
     width: 100%;
-    max-width: 100%;
   }
 
   .newsletter-form label {
     display: grid;
     gap: 0.45rem;
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
+    min-width: 0;
     font-family: var(--ui-font);
-    font-size: 0.87rem;
+    font-size: 0.85rem;
     color: var(--text-soft);
   }
 
   .newsletter-form input {
     width: 100%;
-    max-width: 100%;
     box-sizing: border-box;
-    border: 1px solid var(--line);
-    border-radius: 0.6rem;
-    background: var(--surface-soft);
+    border: 1px solid color-mix(in srgb, var(--line) 85%, transparent 15%);
+    border-radius: 0.7rem;
+    background: var(--surface);
     color: var(--text);
     font-family: var(--ui-font);
-    font-size: 0.96rem;
-    padding: 0.68rem 0.72rem;
+    font-size: 0.95rem;
+    padding: 0.74rem 0.78rem;
   }
 
   .newsletter-form button {
-    border: 1px solid color-mix(in srgb, var(--accent) 70%, var(--line) 30%);
-    border-radius: 0.6rem;
-    background: var(--accent);
+    border: 1px solid color-mix(in srgb, var(--accent) 76%, var(--line) 24%);
+    border-radius: 0.72rem;
+    background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 82%, #000 18%));
     color: #fff;
     font-family: var(--ui-font);
-    font-size: 0.95rem;
-    font-weight: 600;
-    padding: 0.72rem 1rem;
-    justify-self: start;
+    font-size: 0.92rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    padding: 0.76rem 1rem;
     cursor: pointer;
-    transition: transform 180ms ease, filter 180ms ease;
+    transition: transform 180ms ease, filter 180ms ease, box-shadow 180ms ease;
+    min-height: 44px;
   }
 
-  .newsletter-form button:hover {
+  .newsletter-form button:hover,
+  .newsletter-form button:focus-visible {
     transform: translateY(-1px);
-    filter: brightness(0.95);
+    box-shadow: 0 12px 20px rgba(19, 11, 8, 0.26);
+    filter: brightness(1.03);
   }
 
   .note {
     font-size: 0.82rem;
+    opacity: 0.92;
   }
 
   .dark .newsletter-form button {
     color: #1c130d;
+  }
+
+  @media (max-width: 920px) {
+    .newsletter-form {
+      grid-template-columns: 1fr;
+      gap: 0.8rem;
+    }
+
+    .newsletter-form button {
+      width: 100%;
+    }
   }
 </style>
