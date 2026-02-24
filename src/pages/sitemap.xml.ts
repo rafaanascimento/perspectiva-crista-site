@@ -1,4 +1,5 @@
 import { getCollection } from 'astro:content';
+import authors from '../data/authors.json';
 import { getPostSlug, slugifyTerm } from '../utils/postHelpers';
 
 const DEFAULT_SITE = 'https://perspectiva-crista-site.pages.dev';
@@ -21,6 +22,9 @@ export async function GET({ site, url }: { site?: URL; url: URL }) {
   const urls = [
     `${baseSite}/`,
     `${baseSite}/artigos/`,
+    `${baseSite}/sobre/`,
+    `${baseSite}/recursos/`,
+    ...authors.map((author) => `${baseSite}/autores/${slugifyTerm(author.name)}/`),
     ...posts.map((post) => `${baseSite}/posts/${getPostSlug(post)}/`),
     ...categories.map((category) => `${baseSite}/categorias/${slugifyTerm(category)}/`),
     ...tags.map((tag) => `${baseSite}/tags/${slugifyTerm(tag)}/`)

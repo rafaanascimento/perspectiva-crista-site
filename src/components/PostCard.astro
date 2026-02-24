@@ -8,6 +8,8 @@ interface Props {
   author: string;
   readingTime: string;
   fallbackCover: string;
+  imageLoading?: 'lazy' | 'eager';
+  imageFetchPriority?: 'high' | 'auto';
 }
 
 const {
@@ -18,7 +20,9 @@ const {
   formattedDate,
   author,
   readingTime,
-  fallbackCover
+  fallbackCover,
+  imageLoading = 'lazy',
+  imageFetchPriority = 'auto'
 } = Astro.props;
 ---
 
@@ -30,7 +34,8 @@ const {
         alt={`Capa do artigo ${title}`}
         width="960"
         height="540"
-        loading="lazy"
+        loading={imageLoading}
+        fetchpriority={imageFetchPriority}
         onerror={`this.onerror=null;this.src='${fallbackCover}';`}
       />
     </div>
@@ -111,4 +116,3 @@ const {
     color: var(--text-soft);
   }
 </style>
-

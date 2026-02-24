@@ -1,21 +1,13 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const organizationJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: 'Perspectiva Cristã',
-  url: 'https://perspectiva-crista-site.pages.dev/',
-  description: 'Blog cristão focado em discipulado, formação bíblica e crescimento espiritual.'
-};
-
 const aboutPageJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'AboutPage',
   name: 'Sobre o Perspectiva Cristã',
   url: 'https://perspectiva-crista-site.pages.dev/sobre/',
   description:
-    'Página institucional com missão, visão editorial e propósito do blog Perspectiva Cristã.',
+    'Página institucional com missão, valores, diretrizes editoriais e compromisso de qualidade do Perspectiva Cristã.',
   isPartOf: {
     '@type': 'WebSite',
     name: 'Perspectiva Cristã',
@@ -26,78 +18,68 @@ const aboutPageJsonLd = {
 
 <BaseLayout
   title="Sobre o Perspectiva Cristã"
-  description="Conheça a missão, a visão e o propósito editorial do Perspectiva Cristã, além dos conteúdos e autores do blog."
+  description="Conheça a missão, valores e diretrizes editoriais do Perspectiva Cristã."
+  canonical="https://perspectiva-crista-site.pages.dev/sobre/"
 >
-  <script slot="head" type="application/ld+json" set:html={JSON.stringify(organizationJsonLd)} />
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(aboutPageJsonLd)} />
 
   <article class="about-page">
     <h1>Sobre o Perspectiva Cristã</h1>
 
-    <section aria-labelledby="missao">
-      <h2 id="missao">Missão</h2>
+    <section>
+      <h2>Propósito editorial</h2>
       <p>
-        Compartilhar reflexões bíblicas sólidas e aplicáveis, ajudando cristãos a crescerem em
-        maturidade espiritual, discipulado e vida com propósito centrada em Cristo.
+        Produzir conteúdo cristão confiável, bíblico e aplicável para formar leitores com
+        discernimento teológico e maturidade na fé.
       </p>
     </section>
 
-    <section aria-labelledby="visao">
-      <h2 id="visao">Visão</h2>
+    <section>
+      <h2>Missão</h2>
       <p>
-        Ser uma referência digital em conteúdo cristão fiel às Escrituras, com linguagem acessível,
-        profundidade teológica e relevância para os desafios cotidianos da igreja e da família.
+        Compartilhar reflexões bíblicas sólidas e práticas, ajudando cristãos a crescerem em
+        discipulado, caráter e vida centrada em Cristo.
       </p>
     </section>
 
-    <section aria-labelledby="encontrar">
-      <h2 id="encontrar">O que você vai encontrar aqui</h2>
+    <section>
+      <h2>Valores</h2>
       <p>
-        Publicamos estudos bíblicos, artigos temáticos, devocionais e análises práticas sobre fé,
-        discipulado e transformação de vida, sempre com foco em edificação e clareza doutrinária.
+        Fidelidade às Escrituras, responsabilidade pastoral, clareza textual, respeito ao leitor e
+        compromisso com verdade e graça.
       </p>
     </section>
 
-    <section aria-labelledby="quem-escreve">
-      <h2 id="quem-escreve">Quem escreve</h2>
+    <section>
+      <h2>Diretrizes de conteúdo</h2>
       <p>
-        O conteúdo é produzido por autores cristãos comprometidos com a Palavra. Cada artigo busca
-        unir verdade bíblica, sensibilidade pastoral e aplicação real para o dia a dia.
+        Priorizamos fundamentação bíblica, contexto histórico quando necessário e aplicação prática,
+        evitando sensacionalismo e simplificações superficiais.
+      </p>
+    </section>
+
+    <section>
+      <h2>Compromisso com qualidade</h2>
+      <p>
+        Cada artigo passa por revisão editorial e busca equilibrar precisão doutrinária, leitura
+        fluida e relevância para desafios reais da igreja, da família e da vocação.
+      </p>
+    </section>
+
+    <section>
+      <h2>Autoridade temática</h2>
+      <p>
+        Nosso foco é discipulado cristão, formação bíblica e vida com propósito. Você pode explorar
+        autores e categorias para aprofundar temas específicos em sequência.
       </p>
     </section>
   </article>
 </BaseLayout>
 
 <style>
-  .about-page {
-    max-width: 800px;
-    margin: 0 auto;
-    display: grid;
-    gap: 1.2rem;
-  }
-
-  h1 {
-    margin: 0;
-    font-size: clamp(2.1rem, 1.3rem + 2.4vw, 3.1rem);
-    line-height: 1.15;
-    letter-spacing: -0.012em;
-  }
-
-  section {
-    display: grid;
-    gap: 0.55rem;
-  }
-
-  h2 {
-    margin: 0;
-    font-size: clamp(1.35rem, 1.1rem + 0.9vw, 1.8rem);
-    line-height: 1.25;
-  }
-
-  p {
-    margin: 0;
-    font-family: var(--ui-font);
-    color: var(--text-soft);
-    line-height: 1.7;
-  }
+  .about-page { max-width: 800px; margin: 0 auto; display: grid; gap: 1.2rem; }
+  h1 { margin: 0; font-size: clamp(2.1rem, 1.3rem + 2.4vw, 3.1rem); line-height: 1.15; letter-spacing: -0.012em; }
+  section { display: grid; gap: 0.55rem; border: 1px solid var(--line); border-radius: 0.85rem; padding: 0.95rem; background: var(--surface); }
+  h2 { margin: 0; font-size: clamp(1.35rem, 1.1rem + 0.9vw, 1.8rem); line-height: 1.25; }
+  p { margin: 0; font-family: var(--ui-font); color: var(--text-soft); line-height: 1.7; }
 </style>
