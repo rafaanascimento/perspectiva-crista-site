@@ -4,13 +4,21 @@
     "name": "Rafael Nascimento",
     "avatar": "/authors/rafael.jpg",
     "role": "Cristão, Programador e Fundador do Blog",
-    "bio": "Cristão, escritor e entusiasta de tecnologia."
+    "bio": "Cristão, escritor e entusiasta de tecnologia.",
+    "social": {
+      "instagram": "https://www.instagram.com/",
+      "linkedin": "https://www.linkedin.com/"
+    }
   },
   {
     "id": "josue-coutinho",
     "name": "Josué Coutinho",
     "avatar": "/authors/josue-coutinho.jpg",
     "role": "Presbítero e Estudante de Teologia",
-    "bio": "Presbítero e estudante de Teologia, dedicado ao ensino bíblico e à edificação espiritual."
+    "bio": "Presbítero e estudante de Teologia, dedicado ao ensino bíblico e à edificação espiritual.",
+    "social": {
+      "instagram": "https://www.instagram.com/",
+      "linkedin": "https://www.linkedin.com/"
+    }
   }
 ]

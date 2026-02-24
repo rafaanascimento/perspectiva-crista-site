@@ -1,10 +1,15 @@
 import authors from '../data/authors.json';
 
 const FALLBACK_AUTHOR = {
+  id: 'editorial',
   name: 'Autor',
   avatar: '/images/og-default.png',
   role: 'Equipe Perspectiva Cristã',
-  bio: 'Conteúdo editorial do Perspectiva Cristã.'
+  bio: 'Conteúdo editorial do Perspectiva Cristã.',
+  social: {
+    instagram: 'https://www.instagram.com/',
+    linkedin: 'https://www.linkedin.com/'
+  }
 };
 
 export const slugifyTerm = (value: string) =>

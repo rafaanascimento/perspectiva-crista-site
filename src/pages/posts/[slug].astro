@@ -101,6 +101,7 @@ const breadcrumbJsonLd = {
   image={coverPath}
   type="article"
   canonical={canonical}
+  preloadImage={coverPath}
 >
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(articleJsonLd)} />
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(breadcrumbJsonLd)} />
@@ -121,7 +122,8 @@ const breadcrumbJsonLd = {
           alt={`Capa do artigo ${title}`}
           width="960"
           height="560"
-          loading="lazy"
+          loading="eager"
+          fetchpriority="high"
         />
       )}
     </header>
@@ -148,7 +150,14 @@ const breadcrumbJsonLd = {
       )
     }
 
-    <CallToAction />
+    <CallToAction
+      title="Continue sua jornada de fé"
+      text="Se este conteúdo te ajudou, aprofunde-se com mais estudos bíblicos e entre para nossa newsletter editorial."
+      primaryLabel="Ver mais estudos"
+      primaryHref="/artigos/"
+      secondaryLabel="Receber novidades"
+      secondaryHref="/#"
+    />
   </article>
 </BaseLayout>
 

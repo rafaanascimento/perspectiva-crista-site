@@ -1,0 +1,75 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NewsletterSection from '../components/NewsletterSection.astro';
+---
+
+<BaseLayout
+  title="Recursos | Perspectiva Cristã"
+  description="Biblioteca de recursos do Perspectiva Cristã: ebooks, estudos e materiais para aprofundamento bíblico."
+  canonical="https://perspectiva-crista-site.pages.dev/recursos/"
+>
+  <article class="resources-page">
+    <header>
+      <h1>Recursos</h1>
+      <p>
+        Esta seção foi preparada para hospedar materiais digitais do Perspectiva Cristã, incluindo
+        ebooks, estudos temáticos e conteúdos especiais para aprofundamento.
+      </p>
+    </header>
+
+    <section>
+      <h2>Ebooks</h2>
+      <p>Área reservada para guias práticos e compilações de estudos bíblicos em formato digital.</p>
+    </section>
+
+    <section>
+      <h2>Estudos</h2>
+      <p>Espaço para trilhas estruturadas de aprendizado, com progressão e referências confiáveis.</p>
+    </section>
+
+    <section>
+      <h2>Materiais futuros</h2>
+      <p>Modelos, planos de leitura e outros recursos editoriais serão disponibilizados em breve.</p>
+    </section>
+
+    <NewsletterSection
+      title="Seja avisado quando novos recursos forem lançados"
+      description="Cadastre-se para receber convites e atualizações sobre nossos próximos materiais digitais."
+      buttonLabel="Quero receber os lançamentos"
+    />
+  </article>
+</BaseLayout>
+
+<style>
+  .resources-page {
+    max-width: 860px;
+    margin: 0 auto;
+    display: grid;
+    gap: 1rem;
+  }
+
+  header,
+  section {
+    border: 1px solid var(--line);
+    border-radius: 0.9rem;
+    padding: 1rem;
+    background: var(--surface);
+  }
+
+  h1 {
+    margin: 0 0 0.45rem;
+    font-size: clamp(2rem, 1.3rem + 2vw, 2.9rem);
+  }
+
+  h2 {
+    margin: 0 0 0.4rem;
+    font-size: 1.25rem;
+  }
+
+  p {
+    margin: 0;
+    font-family: var(--ui-font);
+    color: var(--text-soft);
+    line-height: 1.65;
+  }
+</style>

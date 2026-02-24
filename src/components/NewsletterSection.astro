@@ -1,0 +1,133 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+  buttonLabel?: string;
+  note?: string;
+}
+
+const {
+  title = 'Receba nossas novidades',
+  description = 'Entre para a newsletter editorial e receba estudos bíblicos, reflexões práticas e conteúdos exclusivos para crescimento espiritual.',
+  buttonLabel = 'Quero receber por e-mail',
+  note = 'Sem spam. Você poderá cancelar quando quiser.'
+} = Astro.props;
+---
+
+<section class="newsletter" aria-label="Assinatura de novidades">
+  <div class="newsletter-inner">
+    <h2>{title}</h2>
+    <p class="description">{description}</p>
+
+    <form class="newsletter-form" action="#" method="post">
+      <label>
+        Seu nome
+        <input type="text" name="firstName" autocomplete="given-name" required />
+      </label>
+
+      <label>
+        Seu melhor e-mail
+        <input type="email" name="email" autocomplete="email" inputmode="email" required />
+      </label>
+
+      <button type="submit">{buttonLabel}</button>
+    </form>
+
+    <p class="note">{note}</p>
+  </div>
+</section>
+
+<style>
+  .newsletter-inner {
+    width: 100%;
+    max-width: 860px;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    padding: clamp(1.2rem, 1.8vw, 1.7rem);
+    border: 1px solid var(--line);
+    border-radius: 1rem;
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .newsletter h2 {
+    margin: 0;
+    font-size: clamp(1.55rem, 1.2rem + 1vw, 2rem);
+    line-height: 1.2;
+  }
+
+  .description,
+  .note {
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+    font-family: var(--ui-font);
+    line-height: 1.6;
+    color: var(--text-soft);
+  }
+
+  .description {
+    font-size: 0.95rem;
+  }
+
+  .newsletter-form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .newsletter-form label {
+    display: grid;
+    gap: 0.45rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    font-family: var(--ui-font);
+    font-size: 0.87rem;
+    color: var(--text-soft);
+  }
+
+  .newsletter-form input {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    border: 1px solid var(--line);
+    border-radius: 0.6rem;
+    background: var(--surface-soft);
+    color: var(--text);
+    font-family: var(--ui-font);
+    font-size: 0.96rem;
+    padding: 0.68rem 0.72rem;
+  }
+
+  .newsletter-form button {
+    border: 1px solid color-mix(in srgb, var(--accent) 70%, var(--line) 30%);
+    border-radius: 0.6rem;
+    background: var(--accent);
+    color: #fff;
+    font-family: var(--ui-font);
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 0.72rem 1rem;
+    justify-self: start;
+    cursor: pointer;
+    transition: transform 180ms ease, filter 180ms ease;
+  }
+
+  .newsletter-form button:hover {
+    transform: translateY(-1px);
+    filter: brightness(0.95);
+  }
+
+  .note {
+    font-size: 0.82rem;
+  }
+
+  .dark .newsletter-form button {
+    color: #1c130d;
+  }
+</style>

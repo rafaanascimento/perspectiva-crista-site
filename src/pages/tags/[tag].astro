@@ -20,6 +20,17 @@ export async function getStaticPaths() {
 }
 
 const { tag, posts } = Astro.props;
+const tagSlug = slugifyTerm(tag);
+const tagDescription = `Explore conteúdos relacionados à tag ${tag} com curadoria editorial e foco bíblico prático.`;
+const canonical = `https://perspectiva-crista-site.pages.dev/tags/${tagSlug}/`;
+
+const collectionJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: `Tag: ${tag}`,
+  description: tagDescription,
+  url: canonical
+};
 
 const fallbackCover =
   "data:image/svg+xml;utf8," +
@@ -36,12 +47,17 @@ const fallbackCover =
 
 <BaseLayout
   title={`Tag: ${tag} | Perspectiva Cristã`}
-  description={`Artigos sobre ${tag} no Perspectiva Cristã.`}
-  canonical={`https://perspectiva-crista-site.pages.dev/tags/${slugifyTerm(tag)}/`}
+  description={tagDescription}
+  canonical={canonical}
 >
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(collectionJsonLd)} />
+
   <section class="taxonomy-page" aria-label={`Artigos com a tag ${tag}`}>
-    <h1>{tag}</h1>
-    <p class="intro">Artigos sobre {tag} no Perspectiva Cristã.</p>
+    <header>
+      <h1>{tag}</h1>
+      <p class="intro">{tagDescription}</p>
+    </header>
+
     <EditorialPostsGrid posts={posts} fallbackCover={fallbackCover} />
   </section>
 </BaseLayout>
@@ -51,6 +67,15 @@ const fallbackCover =
     width: 100%;
     display: grid;
     gap: 1.2rem;
+  }
+
+  header {
+    display: grid;
+    gap: 0.55rem;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    border-radius: 0.9rem;
+    padding: 1rem;
   }
 
   h1 {
