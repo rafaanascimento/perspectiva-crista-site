@@ -2,7 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import EditorialPostsGrid from '../../components/EditorialPostsGrid.astro';
-import { slugifyTerm } from '../../utils/postHelpers';
+import { getPostSlug, slugifyTerm } from '../../utils/postHelpers';
 
 const categoryDescriptions: Record<string, string> = {
   'vida crista':
@@ -44,6 +44,46 @@ const categoriaSlug = slugifyTerm(categoria);
 const categoryTitle = `Categoria: ${categoria}`;
 const categoryDescription = getCategoryDescription(categoria);
 const introText = `Nesta categoria, reunimos artigos organizados por relevância bíblica e ordem cronológica para apoiar sua caminhada com clareza, profundidade e aplicação prática.`;
+const canonical = `https://perspectiva-crista-site.pages.dev/categorias/${categoriaSlug}/`;
+
+const allPosts = await getCollection('posts');
+const recommendedPosts = allPosts
+  .filter((post) => post.data.category !== categoria)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3);
+
+const collectionJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: categoryTitle,
+  description: categoryDescription,
+  url: canonical
+};
+
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Início',
+      item: 'https://perspectiva-crista-site.pages.dev/'
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'Categorias',
+      item: 'https://perspectiva-crista-site.pages.dev/artigos/'
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: categoria,
+      item: canonical
+    }
+  ]
+};
 
 const fallbackCover =
   "data:image/svg+xml;utf8," +
@@ -60,10 +100,21 @@ const fallbackCover =
 
 <BaseLayout
   title={`${categoryTitle} | Perspectiva Cristã`}
-  description={categoryDescription}
-  canonical={`https://perspectiva-crista-site.pages.dev/categorias/${categoriaSlug}/`}
+  description={`${categoryDescription} Explore os artigos organizados no hub de ${categoria}.`}
+  canonical={canonical}
 >
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(collectionJsonLd)} />
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(breadcrumbJsonLd)} />
+
   <section class="taxonomy-page" aria-label={`Artigos da categoria ${categoria}`}>
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Início</a>
+      <span>/</span>
+      <a href="/artigos/">Categorias</a>
+      <span>/</span>
+      <span>{categoria}</span>
+    </nav>
+
     <header class="category-hero">
       <p class="eyebrow">Tema em destaque</p>
       <h1>{categoryTitle}</h1>
@@ -72,15 +123,26 @@ const fallbackCover =
     </header>
 
     <EditorialPostsGrid posts={posts} fallbackCover={fallbackCover} />
+
+    {recommendedPosts.length > 0 && (
+      <section class="recommended" aria-label="Artigos recomendados">
+        <h2>Artigos recomendados</h2>
+        <ul>
+          {recommendedPosts.map((post) => (
+            <li>
+              <a href={`/posts/${getPostSlug(post)}/`}>{post.data.title}</a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
   </section>
 </BaseLayout>
 
 <style>
-  .taxonomy-page {
-    width: 100%;
-    display: grid;
-    gap: 1.2rem;
-  }
+  .taxonomy-page { width: 100%; display: grid; gap: 1.2rem; }
+  .breadcrumb { display: inline-flex; gap: 0.4rem; font-family: var(--ui-font); font-size: 0.84rem; color: var(--text-soft); }
+  .breadcrumb a { color: var(--accent); text-decoration: none; }
 
   .category-hero {
     display: grid;
@@ -91,30 +153,20 @@ const fallbackCover =
     background: color-mix(in srgb, var(--surface) 84%, var(--surface-soft) 16%);
   }
 
-  .eyebrow {
-    margin: 0;
-    font-family: var(--ui-font);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    font-size: 0.74rem;
-    color: var(--text-soft);
-  }
-
-  h1 {
-    margin: 0;
-    font-size: clamp(2.1rem, 1.35rem + 2.2vw, 3.1rem);
-    line-height: 1.15;
-    letter-spacing: -0.012em;
-    color: var(--text);
-  }
+  .eyebrow { margin: 0; font-family: var(--ui-font); text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.74rem; color: var(--text-soft); }
+  h1 { margin: 0; font-size: clamp(2.1rem, 1.35rem + 2.2vw, 3.1rem); line-height: 1.15; letter-spacing: -0.012em; color: var(--text); }
 
   .description,
-  .intro {
-    margin: 0;
-    font-family: var(--ui-font);
-    font-size: clamp(1rem, 0.92rem + 0.3vw, 1.1rem);
-    line-height: 1.6;
-    color: var(--text-soft);
-    max-width: 70ch;
+  .intro { margin: 0; font-family: var(--ui-font); font-size: clamp(1rem, 0.92rem + 0.3vw, 1.1rem); line-height: 1.6; color: var(--text-soft); max-width: 70ch; }
+
+  .recommended {
+    border: 1px solid var(--line);
+    border-radius: 0.9rem;
+    padding: 1rem;
+    background: var(--surface);
   }
+
+  .recommended h2 { margin: 0 0 0.7rem; font-size: 1.2rem; }
+  .recommended ul { margin: 0; padding-left: 1.15rem; }
+  .recommended a { color: var(--accent); text-decoration: none; font-family: var(--ui-font); }
 </style>

@@ -3,14 +3,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { formatDateBR } from '../utils/formatDateBR';
 import { getReadingTimeLabel } from '../utils/readingTime';
-import { getAuthorName, getCoverPath, getPostSlug } from '../utils/postHelpers';
+import { getAuthorName, getCoverPath, getPostSlug, slugifyTerm } from '../utils/postHelpers';
 import PostCard from '../components/PostCard.astro';
+import NewsletterSection from '../components/NewsletterSection.astro';
 
 const posts = (await getCollection('posts')).sort(
   (a, b) => b.data.date.getTime() - a.data.date.getTime()
 );
 
 const latestPostId = posts[0]?.id;
+const latestCover = posts[0] ? getCoverPath(posts[0].data.cover) : '/images/og-default.png';
+
+const categories = [...new Set(posts.map((post) => post.data.category).filter(Boolean))].slice(0, 3);
+const starterPosts = posts.slice(0, 3);
 
 const getCardTitle = (postId: string, title: string) =>
   postId === latestPostId ? 'Quando Jesus Passa...' : title;
@@ -32,13 +37,60 @@ const fallbackCover =
   title="Perspectiva Cristã"
   description="Reflexões bíblicas, fé e propósito para o dia a dia no Perspectiva Cristã."
   canonical="https://perspectiva-crista-site.pages.dev/"
+  preloadImage={latestCover}
 >
   <section class="home-feed" aria-label="Conteúdo da página inicial">
+    <section class="hero-copy" aria-label="Proposta editorial">
+      <p class="eyebrow">Jornalismo cristão bíblico</p>
+      <h1>Conteúdo editorial confiável para aprofundar fé, discernimento e prática cristã.</h1>
+      <p>
+        Explore estudos, reflexões e análises para uma caminhada com Cristo mais sólida, com base
+        bíblica e aplicação real para igreja, família e vocação.
+      </p>
+      <div class="hero-actions">
+        <a class="button-primary" href="/artigos/">Ler artigos</a>
+        <a class="button-secondary" href="/sobre/">Conheça nossa linha editorial</a>
+      </div>
+    </section>
+
+    <section class="editorial-row" aria-label="Navegação editorial">
+      <section class="strategic-categories" aria-label="Categorias estratégicas">
+        <h2>Categorias estratégicas</h2>
+        <div class="pill-list">
+          {categories.map((category) => <a href={`/categorias/${slugifyTerm(category)}/`}>{category}</a>)}
+        </div>
+      </section>
+
+      <section class="starter" aria-label="Comece por aqui">
+        <h2>Comece por aqui</h2>
+        <ul>
+          {
+            starterPosts.map((post) => (
+              <li>
+                <a href={`/posts/${getPostSlug(post)}/`}>
+                  <strong>{post.data.title}</strong>
+                  <span>{formatDateBR(post.data.date)}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section class="authority" aria-label="Bloco de autoridade">
+        <h2>Compromisso com autoridade editorial</h2>
+        <p>
+          Nossa produção prioriza fidelidade às Escrituras, transparência de autoria, revisão textual
+          e clareza pastoral para fortalecer decisões do cotidiano cristão.
+        </p>
+      </section>
+    </section>
+
     <section class="recent" aria-label="Artigos">
       <h2>Artigos</h2>
       <div class="recent-grid">
         {
-          posts.map((post) => (
+          posts.map((post, index) => (
             <PostCard
               url={`/posts/${getPostSlug(post)}/`}
               cover={getCoverPath(post.data.cover)}
@@ -48,48 +100,234 @@ const fallbackCover =
               author={getAuthorName(post.data.author)}
               readingTime={getReadingTimeLabel(post.body)}
               fallbackCover={fallbackCover}
+              imageLoading={index === 0 ? 'eager' : 'lazy'}
+              imageFetchPriority={index === 0 ? 'high' : 'auto'}
             />
           ))
         }
       </div>
     </section>
 
-    <section class="newsletter" aria-label="Assinatura de novidades">
-      <div class="newsletter-inner">
-        <h2>Receba nossas novidades</h2>
-        <form class="newsletter-form" action="#" method="post">
-          <label>
-            Seu Primeiro Nome
-            <input type="text" name="firstName" autocomplete="given-name" required />
-          </label>
-
-          <label>
-            Seu Melhor E-mail
-            <input type="email" name="email" autocomplete="email" required />
-          </label>
-
-          <button type="submit">Assinar</button>
-        </form>
-        <p class="note">
-          Você pode cancelar a inscrição a qualquer momento. Para mais detalhes,
-          consulte nossa Política de Privacidade.
-        </p>
-      </div>
-    </section>
+    <NewsletterSection />
   </section>
 </BaseLayout>
 
 <style>
   .home-feed {
     display: grid;
-    gap: clamp(2rem, 4vw, 3rem);
+    gap: clamp(2rem, 4vw, 3.2rem);
+    padding-bottom: clamp(1rem, 2vw, 1.6rem);
   }
 
-  .recent h2,
-  .newsletter h2 {
+  .hero-copy {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    gap: 0.95rem;
+    padding: clamp(1.8rem, 3.8vw, 3.2rem);
+    border: 1px solid color-mix(in srgb, var(--line) 72%, var(--accent) 28%);
+    border-radius: 1.25rem;
+    background:
+      linear-gradient(130deg, rgba(11, 9, 8, 0.74), rgba(27, 21, 18, 0.82)),
+      radial-gradient(circle at top right, rgba(247, 197, 142, 0.22), transparent 56%);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    animation: fadeRise 720ms ease-out both;
+  }
+
+  .hero-copy::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 55%);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .eyebrow {
+    margin: 0;
+    font-family: var(--ui-font);
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
+    font-size: 0.73rem;
+    color: color-mix(in srgb, #fff 78%, var(--accent) 22%);
+  }
+
+  .hero-copy h1 {
+    margin: 0;
+    max-width: 18ch;
+    color: #fff;
+    text-wrap: balance;
+    text-shadow: 0 10px 30px rgba(0, 0, 0, 0.42);
+    font-size: clamp(2.1rem, 1.35rem + 2.6vw, 3.35rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .hero-copy p {
+    margin: 0;
+    max-width: 65ch;
+    font-family: var(--ui-font);
+    color: color-mix(in srgb, #fff 84%, var(--accent) 16%);
+    line-height: 1.7;
+  }
+
+  .hero-actions {
+    margin-top: 0.4rem;
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+  }
+
+  .button-primary,
+  .button-secondary {
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0.72rem 1.08rem;
+    border-radius: 0.75rem;
+    border: 1px solid transparent;
+    font-family: var(--ui-font);
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: transform 220ms ease, box-shadow 220ms ease, background-color 220ms ease,
+      border-color 220ms ease, filter 220ms ease;
+  }
+
+  .button-primary {
+    color: #fff;
+    background: linear-gradient(135deg, #6b4d35, #4c3727);
+    border-color: color-mix(in srgb, var(--accent) 80%, #fff 20%);
+    box-shadow: 0 10px 22px rgba(24, 15, 10, 0.3);
+  }
+
+  .button-primary:hover,
+  .button-primary:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 28px rgba(17, 11, 8, 0.44);
+    filter: saturate(1.06) brightness(1.04);
+  }
+
+  .button-secondary {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.34);
+    backdrop-filter: blur(3px);
+  }
+
+  .button-secondary:hover,
+  .button-secondary:focus-visible {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.65);
+    background: rgba(255, 255, 255, 0.13);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+  }
+
+  .editorial-row {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+
+  .strategic-categories,
+  .starter,
+  .authority {
+    border: 1px solid var(--line);
+    border-radius: 1rem;
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+    padding: clamp(1rem, 1vw + 0.8rem, 1.4rem);
+  }
+
+  .strategic-categories {
+    grid-column: span 4;
+  }
+
+  .starter {
+    grid-column: span 4;
+  }
+
+  .authority {
+    grid-column: span 4;
+  }
+
+  h2 {
+    margin: 0 0 0.8rem;
+    font-family: var(--ui-font);
+    font-size: clamp(1rem, 0.92rem + 0.3vw, 1.2rem);
+    letter-spacing: 0.01em;
+  }
+
+  .pill-list {
+    display: flex;
+    gap: 0.7rem;
+    flex-wrap: wrap;
+  }
+
+  .pill-list a {
+    text-decoration: none;
+    color: var(--text-soft);
+    border: 1px solid var(--line);
+    background: var(--surface-soft);
+    border-radius: 999px;
+    padding: 0.38rem 0.68rem;
+    font-family: var(--ui-font);
+    font-size: 0.87rem;
+    font-weight: 600;
+    transition: transform 180ms ease, border-color 180ms ease;
+  }
+
+  .pill-list a:hover,
+  .pill-list a:focus-visible {
+    transform: translateY(-1px);
+    border-color: color-mix(in srgb, var(--line) 68%, var(--accent) 32%);
+  }
+
+  .starter ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .starter a {
+    display: grid;
+    gap: 0.25rem;
+    border: 1px solid var(--line);
+    border-radius: 0.75rem;
+    padding: 0.72rem 0.82rem;
+    text-decoration: none;
+    color: var(--text);
+    background: color-mix(in srgb, var(--surface) 84%, var(--surface-soft) 16%);
+    transition: transform 180ms ease, box-shadow 180ms ease;
+  }
+
+  .starter a:hover,
+  .starter a:focus-visible {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .starter span {
+    font-family: var(--ui-font);
+    color: var(--text-soft);
+    font-size: 0.82rem;
+  }
+
+  .authority p {
+    margin: 0;
+    font-family: var(--ui-font);
+    color: var(--text-soft);
+    line-height: 1.72;
+  }
+
+  .recent h2 {
     margin: 0 0 1rem;
     font-family: var(--ui-font);
-    font-size: clamp(0.82rem, 0.75rem + 0.2vw, 0.92rem);
+    font-size: 0.82rem;
     text-transform: uppercase;
     letter-spacing: 0.12em;
     color: var(--text-soft);
@@ -102,94 +340,67 @@ const fallbackCover =
     align-items: stretch;
   }
 
-  .newsletter-inner {
-    width: 100%;
-    max-width: 860px;
-    box-sizing: border-box;
-    overflow-x: hidden;
-    padding: clamp(1.2rem, 1.8vw, 1.7rem);
-    border: 1px solid var(--line);
-    border-radius: 1rem;
-    background: var(--surface);
-    box-shadow: var(--shadow-sm);
-  }
+  @keyframes fadeRise {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
 
-  .newsletter-form {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
-    width: 100%;
-    max-width: 100%;
-  }
-
-  .newsletter-form label {
-    display: grid;
-    gap: 0.45rem;
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-    font-family: var(--ui-font);
-    font-size: 0.87rem;
-    color: var(--text-soft);
-  }
-
-  .newsletter-form input {
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-    border: 1px solid var(--line);
-    border-radius: 0.6rem;
-    background: var(--surface-soft);
-    color: var(--text);
-    font-family: var(--ui-font);
-    font-size: 0.96rem;
-    padding: 0.68rem 0.72rem;
-  }
-
-  .newsletter-form button {
-    border: 1px solid color-mix(in srgb, var(--accent) 70%, var(--line) 30%);
-    border-radius: 0.6rem;
-    background: var(--accent);
-    color: #fff;
-    font-family: var(--ui-font);
-    font-size: 0.95rem;
-    font-weight: 600;
-    padding: 0.72rem 1rem;
-    justify-self: start;
-    cursor: pointer;
-    transition: transform 180ms ease, filter 180ms ease;
-  }
-
-  .newsletter-form button:hover {
-    transform: translateY(-1px);
-    filter: brightness(0.95);
-  }
-
-  .note {
-    margin: 0.82rem 0 0;
-    width: 100%;
-    max-width: 100%;
-    font-family: var(--ui-font);
-    font-size: 0.82rem;
-    line-height: 1.6;
-    color: var(--text-soft);
-  }
-
-  .dark .newsletter-form button {
-    color: #1c130d;
-  }
-
-  @media (min-width: 768px) {
-    .recent-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 1.5rem;
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
 
-  @media (min-width: 1024px) {
+  @media (max-width: 1024px) {
+    .strategic-categories,
+    .starter,
+    .authority {
+      grid-column: span 6;
+    }
+
+    .authority {
+      grid-column: 1 / -1;
+    }
+
     .recent-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.35rem;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .home-feed {
       gap: 1.6rem;
+    }
+
+    .hero-copy {
+      padding: 1.25rem;
+      border-radius: 1rem;
+    }
+
+    .hero-copy h1 {
+      font-size: clamp(1.8rem, 1.2rem + 3vw, 2.35rem);
+    }
+
+    .button-primary,
+    .button-secondary {
+      flex: 1 1 100%;
+    }
+
+    .editorial-row {
+      grid-template-columns: 1fr;
+    }
+
+    .strategic-categories,
+    .starter,
+    .authority {
+      grid-column: auto;
+    }
+
+    .recent-grid {
+      grid-template-columns: 1fr;
+      gap: 1.15rem;
     }
   }
 </style>

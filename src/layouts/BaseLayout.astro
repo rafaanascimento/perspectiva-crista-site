@@ -5,6 +5,7 @@ interface Props {
   image?: string;
   type?: string;
   canonical?: string;
+  preloadImage?: string;
 }
 
 const {
@@ -12,28 +13,24 @@ const {
   description = 'Reflexões bíblicas, fé e propósito para o dia a dia.',
   image = '/images/og-default.png',
   type = 'website',
-  canonical
+  canonical,
+  preloadImage
 } = Astro.props;
 
 const baseUrl = Astro.site ?? Astro.url;
 const canonicalPath = canonical ? new URL(canonical, baseUrl).pathname : Astro.url.pathname;
 const canonicalUrl = new URL(canonicalPath, baseUrl).href;
 const imageUrl = new URL(image || '/images/og-default.png', baseUrl).href;
+const preloadImageUrl = preloadImage ? new URL(preloadImage, baseUrl).href : null;
 
 const organizationJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: 'Perspectiva Cristã',
   url: 'https://perspectiva-crista-site.pages.dev/',
-  description: 'Blog cristão focado em discipulado e crescimento espiritual.',
-  areaServed: 'BR',
-  foundingLocation: {
-    '@type': 'Place',
-    address: {
-      '@type': 'PostalAddress',
-      addressCountry: 'BR'
-    }
-  }
+  logo: 'https://perspectiva-crista-site.pages.dev/images/og-default.png',
+  sameAs: ['https://www.instagram.com/', 'https://www.linkedin.com/'],
+  description: 'Blog cristão focado em discipulado, formação bíblica e crescimento espiritual.'
 };
 
 const websiteJsonLd = {
@@ -80,6 +77,7 @@ const blogJsonLd = {
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
     <link
       rel="preload"
       as="style"
@@ -89,6 +87,8 @@ const blogJsonLd = {
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap"
       rel="stylesheet"
     />
+
+    {preloadImageUrl && <link rel="preload" as="image" href={preloadImageUrl} fetchpriority="high" />}
 
     <script type="application/ld+json" set:html={JSON.stringify(organizationJsonLd)} />
     <script type="application/ld+json" set:html={JSON.stringify(websiteJsonLd)} />
@@ -139,9 +139,7 @@ const blogJsonLd = {
         --shadow-lg: 0 18px 38px rgba(0, 0, 0, 0.46);
       }
 
-      * {
-        box-sizing: border-box;
-      }
+      * { box-sizing: border-box; }
 
       body {
         margin: 0;
@@ -154,16 +152,8 @@ const blogJsonLd = {
         transition: background-color 220ms ease, color 220ms ease;
       }
 
-      .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 24px;
-      }
-
-      .site-header {
-        position: relative;
-        border-bottom: 1px solid var(--line);
-      }
+      .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+      .site-header { position: relative; border-bottom: 1px solid var(--line); }
 
       .nav-shell {
         height: clamp(70px, 6.4vw, 84px);
@@ -173,21 +163,8 @@ const blogJsonLd = {
         -webkit-backdrop-filter: blur(10px);
       }
 
-      .nav-inner {
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 1rem;
-      }
-
-      .site-nav {
-        display: inline-flex;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 0.75rem;
-        font-family: var(--ui-font);
-      }
+      .nav-inner { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+      .site-nav { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 0.75rem; font-family: var(--ui-font); }
 
       .site-nav a {
         text-decoration: none;
@@ -198,16 +175,11 @@ const blogJsonLd = {
         padding: 0.4rem 0.68rem;
         border-radius: 999px;
         border: 1px solid transparent;
-        transition: color 180ms ease, border-color 180ms ease,
-          background-color 180ms ease;
+        transition: color 180ms ease, border-color 180ms ease, background-color 180ms ease;
       }
 
       .site-nav a:hover,
-      .site-nav a:focus-visible {
-        color: var(--text);
-        border-color: var(--line);
-        background: var(--surface-soft);
-      }
+      .site-nav a:focus-visible { color: var(--text); border-color: var(--line); background: var(--surface-soft); }
 
       .theme-toggle {
         display: inline-flex;
@@ -218,113 +190,111 @@ const blogJsonLd = {
         background: var(--surface-soft);
         color: var(--text);
         font-family: var(--ui-font);
-        font-size: 0.87rem;
+        font-size: 0.85rem;
         font-weight: 600;
-        padding: 0.46rem 0.84rem;
+        padding: 0.38rem 0.62rem;
         cursor: pointer;
-        transition: transform 200ms ease, box-shadow 200ms ease,
-          border-color 200ms ease, background-color 200ms ease;
-      }
-
-      .theme-toggle:hover {
-        transform: translateY(-1px);
-        box-shadow: var(--shadow-sm);
-      }
-
-      .theme-toggle .icon {
-        line-height: 1;
       }
 
       .hero {
         position: relative;
-        height: 75vh;
+        height: 62vh;
         min-height: 420px;
-        background-image: url('/images/header.png'), url('/images/post-cover.jpg');
+        background-image: url('/images/header.png');
         background-size: cover;
-        background-position: center center;
-        background-repeat: no-repeat;
-      }
-
-      .hero::after {
-        content: '';
-        position: absolute;
-        inset: auto 0 0;
-        height: 32%;
-        background: linear-gradient(to bottom, transparent, var(--bg));
-        pointer-events: none;
+        background-position: center;
       }
 
       .hero-overlay {
         position: absolute;
         inset: 0;
-        background: linear-gradient(
-          to bottom,
-          rgba(0, 0, 0, 0.08),
-          rgba(0, 0, 0, 0.22)
-        );
+        background:
+          linear-gradient(145deg, rgba(5, 5, 5, 0.62), rgba(9, 8, 7, 0.78)),
+          radial-gradient(circle at top right, rgba(247, 197, 142, 0.24), transparent 60%);
       }
 
       .hero-content {
         position: relative;
         z-index: 1;
+        display: grid;
+        align-content: end;
         height: 100%;
-        display: flex;
-        align-items: center;
+        padding-bottom: clamp(2rem, 5vw, 4rem);
       }
 
       .hero h1 {
         margin: 0;
-        max-width: 17ch;
         color: #fff;
-        text-wrap: balance;
-        font-size: clamp(2.4rem, 1.25rem + 4vw, 4.6rem);
-        line-height: 1.06;
-        letter-spacing: -0.015em;
-        text-shadow: 0 8px 22px rgba(0, 0, 0, 0.34);
+        font-size: clamp(2.15rem, 1.1rem + 3.1vw, 3.55rem);
+        letter-spacing: -0.01em;
+        text-shadow: 0 14px 34px rgba(0, 0, 0, 0.4);
       }
 
-      main {
-        padding: clamp(2.2rem, 4vw, 3.2rem) 0 3.2rem;
-      }
+      main { padding: clamp(1.3rem, 3vw, 2.5rem) 0; }
 
       footer {
-        margin-top: 3rem;
-        border-top: 1px solid var(--line);
-        padding: 1rem 0;
+        border-top: 1px solid color-mix(in srgb, var(--line) 80%, transparent 20%);
+        padding: 1.4rem 0 1.6rem;
         font-family: var(--ui-font);
-        font-size: 0.82rem;
         color: var(--text-soft);
+        font-size: 0.88rem;
+        background: color-mix(in srgb, var(--surface) 86%, var(--bg) 14%);
       }
 
-      @media (max-width: 920px) {
-        .hero {
-          height: 66vh;
-          min-height: 360px;
-          background-position: center top;
-        }
+      .footer-content {
+        display: grid;
+        gap: 0.35rem;
+        justify-items: center;
+        text-align: center;
+      }
 
-        .hero h1 {
-          max-width: 14ch;
-        }
+      .footer-brand {
+        color: var(--text);
+        font-weight: 600;
+      }
+
+      .footer-social {
+        display: inline-flex;
+        gap: 0.55rem;
+        align-items: center;
+        margin-top: 0.15rem;
+      }
+
+      .footer-social a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        color: var(--text-soft);
+        text-decoration: none;
+        background: color-mix(in srgb, var(--surface) 75%, transparent 25%);
+        transition: transform 180ms ease, border-color 180ms ease, color 180ms ease,
+          background-color 180ms ease;
+      }
+
+      .footer-social a:hover,
+      .footer-social a:focus-visible {
+        transform: translateY(-1px);
+        border-color: color-mix(in srgb, var(--line) 70%, var(--accent) 30%);
+        color: var(--text);
+        background: var(--surface-soft);
+      }
+
+      @media (max-width: 980px) {
+        .hero { height: 66vh; min-height: 370px; background-position: center top; }
+        .hero h1 { max-width: 14ch; }
       }
 
       @media (max-width: 720px) {
-        .nav-inner {
-          align-items: center;
-        }
-
-        .site-nav {
-          gap: 0.45rem;
-        }
-
-        .site-nav a {
-          font-size: 0.85rem;
-          padding: 0.34rem 0.54rem;
-        }
-
-        .hero {
-          min-height: 320px;
-        }
+        .nav-inner { align-items: center; }
+        .site-nav { gap: 0.45rem; }
+        .site-nav a { font-size: 0.85rem; padding: 0.34rem 0.54rem; }
+        .hero { min-height: 330px; }
+        .hero-content { padding-bottom: 1.6rem; }
+        .hero h1 { font-size: clamp(1.85rem, 1.2rem + 2.8vw, 2.4rem); }
       }
     </style>
   </head>
@@ -336,6 +306,7 @@ const blogJsonLd = {
           <nav class="site-nav" aria-label="Principal">
             <a href="/">Início</a>
             <a href="/artigos/">Artigos</a>
+            <a href="/recursos/">Recursos</a>
             <a href="/sobre/">Sobre</a>
           </nav>
 
@@ -365,7 +336,15 @@ const blogJsonLd = {
     </main>
 
     <footer>
-      <div class="container">© {new Date().getFullYear()} Perspectiva Cristã</div>
+      <div class="container footer-content">
+        <div class="footer-brand">© 2026 Perspectiva Cristã</div>
+        <div>Desenvolvido por Rafael Nascimento</div>
+        <div class="footer-social" aria-label="Redes sociais">
+          <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" title="LinkedIn"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.11 1 2.5 1 4.98 2.12 4.98 3.5zM0 8h5v15H0V8zm7.5 0H12v2.1h.1c.63-1.2 2.16-2.46 4.45-2.46 4.76 0 5.64 3.13 5.64 7.2V23h-5v-6.93c0-1.65-.03-3.77-2.3-3.77-2.3 0-2.65 1.8-2.65 3.65V23h-5V8z"/></svg></a>
+          <a href="https://github.com/" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M12 .5C5.65.5.5 5.65.5 12A11.5 11.5 0 0 0 8.36 22.9c.58.1.79-.25.79-.56v-2.17c-3.2.7-3.88-1.54-3.88-1.54-.52-1.32-1.28-1.67-1.28-1.67-1.05-.72.08-.7.08-.7 1.16.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.24 3.36.95.1-.74.4-1.24.72-1.52-2.55-.3-5.23-1.27-5.23-5.66 0-1.25.45-2.28 1.18-3.08-.12-.29-.51-1.5.11-3.12 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 5.79 0c2.21-1.49 3.18-1.18 3.18-1.18.62 1.62.23 2.83.11 3.12.74.8 1.18 1.83 1.18 3.08 0 4.4-2.68 5.35-5.24 5.65.41.35.78 1.03.78 2.08v3.08c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg></a>
+          <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm11.5 1.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg></a>
+        </div>
+      </div>
     </footer>
 
     <script is:inline>
@@ -376,16 +355,12 @@ const blogJsonLd = {
         const updateIcon = () => {
           const icon = button.querySelector('.icon');
           if (!icon) return;
-          icon.textContent = document.documentElement.classList.contains('dark')
-            ? '☀️'
-            : '🌙';
+          icon.textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';
         };
 
         button.addEventListener('click', () => {
           document.documentElement.classList.toggle('dark');
-          const theme = document.documentElement.classList.contains('dark')
-            ? 'dark'
-            : 'light';
+          const theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
           localStorage.setItem('perspectiva-theme', theme);
           updateIcon();
         });

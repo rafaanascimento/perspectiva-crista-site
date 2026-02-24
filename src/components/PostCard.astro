@@ -8,6 +8,8 @@ interface Props {
   author: string;
   readingTime: string;
   fallbackCover: string;
+  imageLoading?: 'lazy' | 'eager';
+  imageFetchPriority?: 'high' | 'auto';
 }
 
 const {
@@ -18,7 +20,9 @@ const {
   formattedDate,
   author,
   readingTime,
-  fallbackCover
+  fallbackCover,
+  imageLoading = 'lazy',
+  imageFetchPriority = 'auto'
 } = Astro.props;
 ---
 
@@ -30,7 +34,8 @@ const {
         alt={`Capa do artigo ${title}`}
         width="960"
         height="540"
-        loading="lazy"
+        loading={imageLoading}
+        fetchpriority={imageFetchPriority}
         onerror={`this.onerror=null;this.src='${fallbackCover}';`}
       />
     </div>
@@ -52,30 +57,46 @@ const {
   .post-card > a {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    min-height: 100%;
     text-decoration: none;
     overflow: hidden;
     border-radius: 1rem;
-    border: 1px solid var(--line);
+    border: 1px solid color-mix(in srgb, var(--line) 78%, transparent 22%);
     background: var(--surface);
     box-shadow: var(--shadow-sm);
     cursor: pointer;
-    transition: transform 0.22s ease, box-shadow 0.22s ease,
-      border-color 0.22s ease, background-color 0.22s ease;
+    transition: transform 260ms ease, box-shadow 260ms ease,
+      border-color 260ms ease, background-color 260ms ease;
   }
 
   .post-card > a:hover,
   .post-card > a:focus-visible {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-lg);
-    border-color: color-mix(in srgb, var(--line) 68%, var(--accent) 32%);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(17, 10, 6, 0.24);
+    border-color: color-mix(in srgb, var(--line) 60%, var(--accent) 40%);
   }
 
   .card-image {
+    position: relative;
     aspect-ratio: 16 / 9;
     overflow: hidden;
     border-bottom: 1px solid var(--line);
     background: var(--surface-soft);
+  }
+
+  .card-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 42%, rgba(0, 0, 0, 0.22) 100%);
+    opacity: 0.5;
+    transition: opacity 260ms ease;
+    pointer-events: none;
+  }
+
+  .post-card > a:hover .card-image::after,
+  .post-card > a:focus-visible .card-image::after {
+    opacity: 0.85;
   }
 
   .card-image img {
@@ -83,6 +104,13 @@ const {
     height: 100%;
     object-fit: cover;
     display: block;
+    transform: scale(1);
+    transition: transform 320ms ease;
+  }
+
+  .post-card > a:hover .card-image img,
+  .post-card > a:focus-visible .card-image img {
+    transform: scale(1.045);
   }
 
   .card-content {
@@ -90,25 +118,36 @@ const {
     flex-direction: column;
     justify-content: space-between;
     flex-grow: 1;
-    min-height: 8.8rem;
-    padding: clamp(1rem, 1.5vw, 1.4rem);
-    gap: 0.6rem;
+    min-height: 9.2rem;
+    padding: clamp(1rem, 1.5vw, 1.35rem);
+    gap: 0.72rem;
   }
 
   h3 {
     margin: 0;
-    font-size: clamp(1.12rem, 1rem + 0.7vw, 1.4rem);
+    font-size: clamp(1.12rem, 1rem + 0.7vw, 1.42rem);
     line-height: 1.35;
     color: var(--text);
     font-family: var(--heading-font);
+    text-wrap: pretty;
   }
 
   .meta {
     margin: 0;
     font-family: var(--ui-font);
-    font-size: clamp(0.84rem, 0.82rem + 0.2vw, 0.94rem);
-    line-height: 1.55;
-    color: var(--text-soft);
+    font-size: clamp(0.84rem, 0.8rem + 0.2vw, 0.93rem);
+    line-height: 1.65;
+    color: color-mix(in srgb, var(--text-soft) 90%, var(--text) 10%);
+  }
+
+  @media (max-width: 640px) {
+    .card-content {
+      min-height: 8.6rem;
+      padding: 0.95rem;
+    }
+
+    h3 {
+      font-size: 1.12rem;
+    }
   }
 </style>
-
